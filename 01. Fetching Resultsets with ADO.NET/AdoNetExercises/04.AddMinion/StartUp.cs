@@ -7,13 +7,6 @@ namespace AddMinion
     {
         public static void Main()
         {
-            //Thirth Step:
-                //Add Minion
-            //Fourth Step:
-                //Check Villain
-            //Fifth Step:
-                //Add records in mapping table
-
             string[] minionInfo = Console.ReadLine().Split();
             string[] villainInfo = Console.ReadLine().Split();
 
@@ -48,12 +41,12 @@ namespace AddMinion
 
                 int minionId = GetMinionByName(connection, minionName);
 
-                AddMinionVillain(connection, villainId, minionId);
+                AddMinionVillain(connection, villainId, minionId, minionName, villainName);
             }
 
         }
 
-        private static void AddMinionVillain(SqlConnection connection, int? villainId, int minionId)
+        private static void AddMinionVillain(SqlConnection connection, int? villainId, int minionId, string minionName, string villainName)
         {
             string insertMinionVillain = "INSERT INTO MinionsVillains (MinionId, VillainId) VALUES (@villainId, @minionId)";
 
@@ -63,6 +56,8 @@ namespace AddMinion
                 command.Parameters.AddWithValue("@minionId", minionId);
                 command.ExecuteNonQuery();
             }
+
+            Console.WriteLine($"Successfully added {minionName} to be minion of {villainName}.");
         }
 
         private static int GetMinionByName(SqlConnection connection, string minionName)
@@ -85,6 +80,8 @@ namespace AddMinion
                 command.Parameters.AddWithValue("@villainName", villainName);
                 command.ExecuteNonQuery();
             }
+
+            Console.WriteLine($"Villain {villainName} was added to the database.");
         }
 
         private static int? GetVillainByName(SqlConnection connection, string villainName)
@@ -134,6 +131,8 @@ namespace AddMinion
                 command.Parameters.AddWithValue("@townName", townName);
                 command.ExecuteNonQuery();
             }
+
+            Console.WriteLine($"Town {townName} was added to the database.");
         }
     }
 }
