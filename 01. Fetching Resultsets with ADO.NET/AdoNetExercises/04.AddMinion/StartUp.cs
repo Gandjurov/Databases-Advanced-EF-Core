@@ -19,6 +19,7 @@ namespace AddMinion
             using (SqlConnection connection = new SqlConnection(Configuration.ConnectionString))
             {
                 connection.Open();
+
                 int? townId = GetTownByName(townName, connection);
 
                 if (townId == null)
