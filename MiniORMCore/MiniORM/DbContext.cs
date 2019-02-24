@@ -110,9 +110,16 @@ namespace MiniORM
             }
         }
 
-        private string GetTableName(Type type)
+        private string GetTableName(Type tableType)
         {
-            throw new NotImplementedException();
+            var tableName = ((TableAttribute)Attribute.GetCustomAttribute(tableType, typeof(TableAttribute)))?.Name;
+
+            if (tableName == null)
+            {
+                tableName = this.dbSetProperties[tableType].Name;
+            }
+
+            return tableName;
         }
 
         private bool IsObjectValid(object e)
@@ -282,7 +289,10 @@ namespace MiniORM
 
         private Dictionary<Type, PropertyInfo> DiscoverDbSets()
         {
-            throw new NotImplementedException();
+            return this.GetType()
+                       .GetProperties()
+                       .Where(pi => pi.GetType().GetGenericTypeDefinition() == typeof(DbSet<>))
+                       .ToDictionary(k => k.PropertyType.GetGenericArguments().First(), v => v);
         }
 
         internal static Type[] AllowedSqlTypes =
