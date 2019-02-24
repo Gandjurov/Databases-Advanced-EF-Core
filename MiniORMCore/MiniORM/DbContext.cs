@@ -202,7 +202,33 @@ namespace MiniORM
         private void MapNavigationProperties<TEntity>(DbSet<TEntity> dbSet) 
             where TEntity : class, new()
         {
-            throw new NotImplementedException();
+            var entityType = typeof(TEntity);
+
+            var foreignKeys = entityType.GetProperties()
+                .Where(pi => pi.HasAttribute<ForeignKeyAttribute>())
+                .ToArray();
+
+            foreach (var foreignKey in foreignKeys)
+            {
+                var navigationPropertyName =
+                        foreignKey.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                var navigationProperty = entityType.GetProperty(navigationPropertyName);
+
+                var navigationDbSet = this.dbSetProperties[navigationProperty.PropertyType]
+                                                .GetValue(this);
+                var navigationPrimaryKey = navigationProperty.PropertyType.GetProperties()
+                                                .First(pi => pi.HasAttribute<KeyAttribute>());
+
+                foreach (var entity in dbSet)
+                {
+                    var foreignKeyValue = foreignKey.GetValue(entity);
+
+                    var navigationPropertyValue = ((IEnumerable<object>)navigationDbSet)
+                                                    .First(currentNavigationProperty => navigationPrimaryKey.GetValue(currentNavigationProperty).Equals(foreignKeyValue));
+
+                    navigationProperty.SetValue(entity, navigationPropertyValue);
+                }
+            }
         }
 
         private void InitiliazeDbSets()
