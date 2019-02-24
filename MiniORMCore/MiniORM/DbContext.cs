@@ -120,6 +120,48 @@ namespace MiniORM
 
         private void MapAllRelations()
         {
+            foreach (var dbSetProperty in this.dbSetProperties)
+            {
+                var dbSetType = dbSetProperty.Key;
+
+                var mapRelations = typeof(DbContext)
+                    .GetMethod("MapRelations", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .MakeGenericMethod(dbSetType);
+
+                var dbSet = dbSetProperty.Value.GetValue(this);
+
+                mapRelations.Invoke(this, new object[] { dbSet });
+            }
+        }
+
+        private void MapRelations<TEntity>(DbSet<TEntity> dbSet)
+            where TEntity : class, new() 
+        {
+            var entityType = typeof(TEntity);
+
+            MapNavigationProperties(dbSet);
+
+            var collections = entityType
+                .GetProperties()
+                .Where(pi => pi.GetType().IsGenericType &&
+                             pi.GetType().GetGenericTypeDefinition() == typeof(ICollection<>))
+                .ToArray();
+
+            foreach (var collection in collections)
+            {
+                var collectionType = collection.GetType().GetGenericArguments().First();
+
+                var mapCollection = typeof(DbContext)
+                    .GetMethod("MapCollection", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .MakeGenericMethod(entityType, collectionType);
+
+                mapCollection.Invoke(this, new object[] { dbSet, collectionType });
+            }
+        }
+
+        private void MapNavigationProperties<TEntity>(DbSet<TEntity> dbSet) 
+            where TEntity : class, new()
+        {
             throw new NotImplementedException();
         }
 
