@@ -10,7 +10,7 @@ namespace MiniORM
     {
         internal DbSet(IEnumerable<TEntity> entities)
         {
-            this.Entities = new List<TEntity>();
+            this.Entities = entities.ToList();
 
             this.ChangeTracker = new ChangeTracker<TEntity>(entities);
         }

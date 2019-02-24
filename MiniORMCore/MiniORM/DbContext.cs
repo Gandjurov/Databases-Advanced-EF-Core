@@ -277,21 +277,32 @@ namespace MiniORM
 
             var tableName = GetTableName(table);
 
-            var fetchedRows = this.connection.FetchResultSet<TEntity>(tableName, columns);
+            var fetchedRows = this.connection.FetchResultSet<TEntity>(tableName, columns).ToArray();
 
             return fetchedRows;
         }
 
         private string[] GetColumnNames(Type table)
         {
-            throw new NotImplementedException();
+            var tableName = GetTableName(table);
+
+            var dbColumns = this.connection.FetchColumnNames(tableName);
+
+            var columns = table.GetProperties()
+                               .Where(x => dbColumns.Contains(x.Name) &&
+                               !x.HasAttribute<NotMappedAttribute>() &&
+                               AllowedSqlTypes.Contains(x.PropertyType))
+                               .Select(x => x.Name)
+                               .ToArray();
+
+            return columns;
         }
 
         private Dictionary<Type, PropertyInfo> DiscoverDbSets()
         {
             return this.GetType()
                        .GetProperties()
-                       .Where(pi => pi.GetType().GetGenericTypeDefinition() == typeof(DbSet<>))
+                       .Where(pi => pi.PropertyType().GetGenericTypeDefinition() == typeof(DbSet<>))
                        .ToDictionary(k => k.PropertyType.GetGenericArguments().First(), v => v);
         }
 
