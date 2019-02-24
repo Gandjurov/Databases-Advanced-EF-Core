@@ -125,7 +125,17 @@ namespace MiniORM
 
         private void InitiliazeDbSets()
         {
-            throw new NotImplementedException();
+            foreach (var dbSetProperty in dbSetProperties)
+            {
+                var dbSetType = dbSetProperty.Key;
+                var dbSetPropertyType = dbSetProperty.Value;
+
+                var populateDbSetGeneric = typeof(DbContext)
+                    .GetMethod("PopulateDbSet", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MakeGenericMethod(dbSetType);
+
+                populateDbSetGeneric.Invoke(this, new object[] { dbSetPropertyType });
+            }
         }
 
         private Dictionary<Type, PropertyInfo> DiscoverDbSets()
