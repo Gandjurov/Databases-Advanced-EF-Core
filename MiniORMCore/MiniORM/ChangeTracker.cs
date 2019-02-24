@@ -78,7 +78,7 @@ namespace MiniORM
             return isModified;
         }
 
-        private IEnumerable<object> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T entity)
+        private static IEnumerable<object> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T entity)
         {
             return primaryKeys.Select(pk => pk.GetValue(entity));
         }
