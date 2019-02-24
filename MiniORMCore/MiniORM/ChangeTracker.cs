@@ -74,11 +74,13 @@ namespace MiniORM
                 .ToArray();
 
             var isModified = modifiedProperties.Any();
+
+            return isModified;
         }
 
-        private IEnumerable<T> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T proxyEntity)
+        private IEnumerable<object> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T entity)
         {
-            throw new NotImplementedException();
+            return primaryKeys.Select(pk => pk.GetValue(entity));
         }
 
         private List<T> CloneEntities(IEnumerable<T> entities)
