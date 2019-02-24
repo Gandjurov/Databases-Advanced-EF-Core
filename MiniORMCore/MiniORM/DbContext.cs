@@ -115,9 +115,15 @@ namespace MiniORM
             throw new NotImplementedException();
         }
 
-        private bool IsObjectValid(object x)
+        private bool IsObjectValid(object e)
         {
-            throw new NotImplementedException();
+            var validationContext = new ValidationContext(e);
+
+            var validationErrors = new List<ValidationResult>();
+
+            var validationResult = Validator.TryValidateObject(e, validationContext, validationErrors, validateAllProperties: true);
+
+            return validationResult;
         }
 
         private void MapAllRelations()
@@ -257,6 +263,19 @@ namespace MiniORM
 
         private IEnumerable<TEntity> LoadTableEntities<TEntity>()
             where TEntity : class
+        {
+            var table = typeof(TEntity);
+
+            var columns = GetColumnNames(table);
+
+            var tableName = GetTableName(table);
+
+            var fetchedRows = this.connection.FetchResultSet<TEntity>(tableName, columns);
+
+            return fetchedRows;
+        }
+
+        private string[] GetColumnNames(Type table)
         {
             throw new NotImplementedException();
         }
