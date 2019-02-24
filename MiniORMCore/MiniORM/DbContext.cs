@@ -138,6 +138,21 @@ namespace MiniORM
             }
         }
 
+        private void PopulateDbSet<TEntity>(PropertyInfo dbSet) 
+            where TEntity : class, new()
+        {
+            var tableEntities = LoadTableEntities<TEntity>();
+            var dbSetInstance = new DbSet<TEntity>(tableEntities);
+
+            ReflectionHelper.ReplaceBackingField(this, dbSet.Name, dbSetInstance);
+        }
+
+        private IEnumerable<TEntity> LoadTableEntities<TEntity>()
+            where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<Type, PropertyInfo> DiscoverDbSets()
         {
             throw new NotImplementedException();
