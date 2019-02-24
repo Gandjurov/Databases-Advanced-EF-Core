@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
 namespace MiniORM
 {
@@ -29,6 +31,55 @@ namespace MiniORM
         public IReadOnlyCollection<T> AllEntities
             => this.allEntities.AsReadOnly();
 
+        public void Add(T item)
+            => this.added.Add(item);
+
+        public void Remove(T item)
+            => this.removed.Remove(item);
+
+        public IEnumerable<T> GetModifiedEntities(DbSet<T> dbSet)
+        {
+            var modifiedEntities = new List<T>();
+
+            var primaryKeys = typeof(T).GetProperties()
+                .Where(pi => pi.HasAttribute<KeyAttribute>())
+                .ToArray();
+
+            foreach (var proxyEntity in this.AllEntities)
+            {
+                var primaryKeyValues = GetPrimaryKeyValues(primaryKeys, proxyEntity).ToArray();
+
+                var entity = dbSet.Entities
+                    .Single(e => GetPrimaryKeyValues(primaryKeys, e).SequenceEqual(primaryKeyValues));
+
+                var isModified = IsModified(proxyEntity, entity);
+
+                if (isModified)
+                {
+                    modifiedEntities.Add(entity);
+                }
+            }
+
+            return modifiedEntities;
+        }
+
+        private bool IsModified(T proxyEntity, T entity)
+        {
+            var monitoredProperties = typeof(T).GetProperties()
+                .Where(pi => DbContext.AllowedSqlTypes.Contains(pi.PropertyType))
+                .ToArray();
+
+            var modifiedProperties = monitoredProperties
+                .Where(pi => !Equals(pi.GetValue(proxyEntity), pi.GetValue(entity)))
+                .ToArray();
+
+            var isModified = modifiedProperties.Any();
+        }
+
+        private IEnumerable<T> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T proxyEntity)
+        {
+            throw new NotImplementedException();
+        }
 
         private List<T> CloneEntities(IEnumerable<T> entities)
         {
