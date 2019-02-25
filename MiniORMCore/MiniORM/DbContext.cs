@@ -302,7 +302,7 @@ namespace MiniORM
         {
             return this.GetType()
                        .GetProperties()
-                       .Where(pi => pi.PropertyType().GetGenericTypeDefinition() == typeof(DbSet<>))
+                       .Where(pi => pi.GetType().GetGenericTypeDefinition() == typeof(DbSet<>))
                        .ToDictionary(k => k.PropertyType.GetGenericArguments().First(), v => v);
         }
 
