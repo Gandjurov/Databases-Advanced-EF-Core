@@ -8,7 +8,6 @@ using System.Reflection;
 
 namespace MiniORM
 {
-	// TODO: Create your DbContext class here.
     public abstract class DbContext
     {
         private readonly DatabaseConnection connection;

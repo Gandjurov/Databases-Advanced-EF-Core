@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MiniORM.App.Data.Entities
 {
-    public class EmployeesProjects
+    public class EmployeeProject
     {
         [Key]
         [ForeignKey(nameof(Employee))]
