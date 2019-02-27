@@ -13,7 +13,7 @@ namespace SoftUni
         {
             using (var context = new SoftUniContext())
             {
-                var result = GetAddressesByTown(context);
+                var result = GetEmployee147(context);
                 Console.WriteLine(result);
             }
         }
@@ -191,6 +191,33 @@ namespace SoftUni
             return sb.ToString().Trim();
         }
 
-        
+        //TASK - 09. Employee 147 
+        public static string GetEmployee147(SoftUniContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var employee = context.Employees
+                                  .Where(e => e.EmployeeId == 147)
+                                  .Select(e => new
+                                  {
+                                      e.FirstName,
+                                      e.LastName,
+                                      e.JobTitle,
+                                      projects = e.EmployeesProjects
+                                        .Select(ep => ep.Project.Name)
+                                        .OrderBy(p => p)
+                                        .ToList()
+                                  })
+                                  .First();
+
+            sb.AppendLine($"{employee.FirstName} {employee.LastName} - {employee.JobTitle}");
+
+            foreach (var project in employee.projects)
+            {
+                sb.AppendLine($"{project}");
+            }
+
+            return sb.ToString().Trim();
+        }
     }
 }
