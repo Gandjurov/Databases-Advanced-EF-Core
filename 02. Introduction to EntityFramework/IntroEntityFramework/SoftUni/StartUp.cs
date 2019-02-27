@@ -1,6 +1,7 @@
 ﻿using SoftUni.Data;
 using SoftUni.Models;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace SoftUni
         {
             using (var context = new SoftUniContext())
             {
-                var result = AddNewAddressToEmployee(context);
+                var result = GetEmployeesInPeriod(context);
                 Console.WriteLine(result);
             }
         }
@@ -123,6 +124,44 @@ namespace SoftUni
                 sb.AppendLine($"{employeeAddress}");
             }
 
+
+            return sb.ToString().Trim();
+        }
+
+        //TASK - 07. Employees and Projects 
+        public static string GetEmployeesInPeriod(SoftUniContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var employees = context.Employees
+                                   .Where(p => p.EmployeesProjects.Any(s => s.Project.StartDate.Year >= 2001 && s.Project.StartDate.Year <= 2003))
+                                   .Select(e => new
+                                   {
+                                       EmployeeFullName = e.FirstName + " " + e.LastName,
+                                       ManagerFullName = e.Manager.FirstName + " " + e.Manager.LastName,
+                                       Projects = e.EmployeesProjects.Select(p => new
+                                       {
+                                           ProjectName = p.Project.Name,
+                                           StartDate = p.Project.StartDate,
+                                           EndDate = p.Project.EndDate
+                                       }).ToList()
+                                   })
+                                   .Take(10)
+                                   .ToList();
+
+            foreach (var employee in employees)
+            {
+                sb.AppendLine($"{employee.EmployeeFullName} - Manager: {employee.ManagerFullName}");
+
+                foreach (var project in employee.Projects)
+                {
+                    var startDate = project.StartDate.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                    var endDate = project.EndDate.HasValue ? project.EndDate.Value.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)
+                                  : "not finished";
+                    
+                    sb.AppendLine($"--{project.ProjectName} - {startDate} - {endDate}");
+                }
+            }
 
             return sb.ToString().Trim();
         }
