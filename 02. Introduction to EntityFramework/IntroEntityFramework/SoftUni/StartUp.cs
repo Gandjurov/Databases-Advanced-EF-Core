@@ -21,7 +21,18 @@ namespace SoftUni
         {
             StringBuilder sb = new StringBuilder();
 
-            var employees = context.Employees.OrderBy(x => x.EmployeeId);
+            var employees = context.Employees
+                                   .Select(e => new
+                                   {
+                                       e.FirstName,
+                                       e.LastName,
+                                       e.MiddleName,
+                                       e.JobTitle,
+                                       e.Salary,
+                                       e.EmployeeId
+                                   })
+                                   .OrderBy(x => x.EmployeeId)
+                                   .ToList();
 
             foreach (var employee in employees)
             {
