@@ -13,7 +13,7 @@ namespace SoftUni
         {
             using (var context = new SoftUniContext())
             {
-                var result = GetLatestProjects(context);
+                var result = IncreaseSalaries(context);
                 Console.WriteLine(result);
             }
         }
@@ -274,6 +274,32 @@ namespace SoftUni
             foreach (var project in projects)
             {
                 sb.AppendLine($"{project.Name}{Environment.NewLine}{project.Description}{Environment.NewLine}{project.StartDate}");
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        //TASK - 12. Increase Salaries 
+        public static string IncreaseSalaries(SoftUniContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            context.Employees
+                   .Where(e => new[] { "Engineering", "Tool Design", "Marketing", "Information Services" }.Contains(e.Department.Name))
+                   .ToList()
+                   .ForEach(e => e.Salary *= 1.12m);
+
+            context.SaveChanges();
+
+            var employees = context.Employees
+                                   .Where(e => new[] { "Engineering", "Tool Design", "Marketing", "Information Services" }.Contains(e.Department.Name))
+                                   .OrderBy(e => e.FirstName)
+                                   .ThenBy(e => e.LastName)
+                                   .ToList();
+
+            foreach (var emp in employees)
+            {
+                sb.AppendLine($"{emp.FirstName} {emp.LastName} (${emp.Salary:F2})");
             }
 
             return sb.ToString().Trim();
