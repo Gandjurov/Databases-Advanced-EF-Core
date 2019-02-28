@@ -13,7 +13,7 @@ namespace SoftUni
         {
             using (var context = new SoftUniContext())
             {
-                var result = GetEmployee147(context);
+                var result = GetDepartmentsWithMoreThan5Employees(context);
                 Console.WriteLine(result);
             }
         }
@@ -219,5 +219,42 @@ namespace SoftUni
 
             return sb.ToString().Trim();
         }
+
+        //TASK - 10. Departments with More Than 5 Employees 
+        public static string GetDepartmentsWithMoreThan5Employees(SoftUniContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var departments = context.Departments
+                                     .Where(e => e.Employees.Count > 5)
+                                     .OrderBy(e => e.Employees.Count)
+                                     .ThenBy(d => d.Name)
+                                     .Select(x => new
+                                     {
+                                         DepartmentName = x.Name,
+                                         ManagerFullName = x.Manager.FirstName + " " + x.Manager.LastName,
+                                         Employees = x.Employees.Select(e => new
+                                         {
+                                             EmployeeFullName = e.FirstName + " " + e.LastName,
+                                             JobTitle = e.JobTitle
+                                         }).OrderBy(f => f.EmployeeFullName)
+                                           .ToList()
+                                     });
+
+            foreach (var department in departments)
+            {
+                sb.AppendLine($"{department.DepartmentName} – {department.ManagerFullName}");
+
+                foreach (var employee in department.Employees)
+                {
+                    sb.AppendLine($"{employee.EmployeeFullName} - {employee.JobTitle}");
+                }
+            }
+
+
+
+            return sb.ToString().Trim();
+        }
+
     }
 }
