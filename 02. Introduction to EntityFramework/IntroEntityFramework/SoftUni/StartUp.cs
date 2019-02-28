@@ -333,5 +333,41 @@ namespace SoftUni
 
             return sb.ToString().Trim();
         }
+
+
+        //TASK - 14. Delete Project by Id
+        public static string DeleteProjectById(SoftUniContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var project = context.Projects.FirstOrDefault(x => x.ProjectId == 2);
+
+            var employeeProjects = context.EmployeesProjects.Where(x => x.ProjectId == 2);
+
+            context.EmployeesProjects.RemoveRange(employeeProjects);
+
+            //foreach (var employeeProject in employeeProjects)
+            //{
+            //    context.EmployeesProjects.Remove(employeeProject);
+            //}
+
+            context.Projects.Remove(project);
+
+            context.SaveChanges();
+
+            var projects = context.Projects
+                                  .Select(x => x.Name)
+                                  .Take(10)
+                                  .ToList();
+
+            foreach (var currentProject in projects)
+            {
+                sb.AppendLine(currentProject);
+            }
+
+            return sb.ToString().Trim();
+        }
+
+
     }
 }
