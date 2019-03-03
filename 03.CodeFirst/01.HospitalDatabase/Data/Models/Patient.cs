@@ -28,6 +28,6 @@
 
         public ICollection<Diagnose> Diagnoses { get; set; }
 
-        public ICollection<PatientMedicaments> Prescriptions { get; set; }
+        public ICollection<PatientMedicament> Prescriptions { get; set; }
     }
 }

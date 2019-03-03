@@ -13,6 +13,6 @@ namespace P01_HospitalDatabase.Data.Models
         [StringLength(50)]
         public string Name { get; set; }
 
-        public ICollection<PatientMedicaments> Presciptions { get; set; }
+        public ICollection<PatientMedicament> Presciptions { get; set; }
     }
 }

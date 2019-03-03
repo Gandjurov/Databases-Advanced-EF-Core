@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace P01_HospitalDatabase.Data.Generators
+namespace P01_HospitalDatabase.Generators
 {
     public class AddressGenerator
     {
