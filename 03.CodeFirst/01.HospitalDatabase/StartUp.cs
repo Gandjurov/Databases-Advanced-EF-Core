@@ -10,24 +10,11 @@ namespace P01_HospitalDatabase
     {
         public static void Main()
         {
-            //using (var dbContext = new HospitalContext())
-            //{
-            //    DatabaseInitializer.ResetDatabase(dbContext);
-            //}
-
-            LoggerFactory SqlCommandLoggerFactory = new LoggerFactory(new[]
+            using (HospitalContext context = new HospitalContext())
             {
-                new ConsoleLoggerProvider((category, level)
-                    => category == DbLoggerCategory.Database.Command.Name 
-                    && level == LogLevel.Information, true)
-            });
-
-            DbContextOptionsBuilder<HospitalContext> optionBuilder = new DbContextOptionsBuilder<HospitalContext>();
-
-            optionBuilder
-                .UseSqlServer(Configuration.ConnectionString, s => s.MigrationsAssembly("01.HospitalDatabase"))
-                .UseLoggerFactory(SqlCommandLoggerFactory)
-                .EnableSensitiveDataLogging();
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
 
         }
     }
