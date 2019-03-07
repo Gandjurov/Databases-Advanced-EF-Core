@@ -23,6 +23,7 @@ namespace P01_HospitalDatabase.Data
         public DbSet<Medicament> Medicaments { get; set; }
         public DbSet<Diagnose> Diagnoses { get; set; }
         public DbSet<PatientMedicament> Prescriptions { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -43,6 +44,21 @@ namespace P01_HospitalDatabase.Data
             ConfigureMedicamentEntity(modelBuilder);
 
             ConfigurePatientMedicamentEntity(modelBuilder);
+
+            ConfigureDoctorEntity(modelBuilder);
+        }
+
+        private void ConfigureDoctorEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<Doctor>()
+                .HasKey(d => d.DoctorId);
+
+            modelBuilder
+                .Entity<Doctor>()
+                .HasMany(d => d.Visitations)
+                .WithOne(v => v.Doctors);
+
         }
 
         private void ConfigurePatientMedicamentEntity(ModelBuilder modelBuilder)

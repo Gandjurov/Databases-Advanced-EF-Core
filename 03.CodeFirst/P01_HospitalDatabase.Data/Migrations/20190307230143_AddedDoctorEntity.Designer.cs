@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using P01_HospitalDatabase.Data;
 
 namespace P01_HospitalDatabase.Data.Migrations
 {
     [DbContext(typeof(HospitalContext))]
-    partial class HospitalContextModelSnapshot : ModelSnapshot
+    [Migration("20190307230143_AddedDoctorEntity")]
+    partial class AddedDoctorEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace P01_HospitalDatabase.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Specialty");
+                    b.Property<string>("Speciality");
 
                     b.HasKey("DoctorId");
 
