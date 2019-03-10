@@ -14,17 +14,18 @@ namespace P01_StudentSystem
         {
             using (var context = new StudentDbContext())
             {
+                context.Database.EnsureCreated();
+                
+                Seed(context);
+
                 context.Database.EnsureDeleted();
 
-                context.Database.EnsureCreated();
-
-                Seed(context);
             }
         }
 
-        static void Seed(StudentDbContext dbContext)
+        static void Seed(StudentDbContext context)
         {
-            var students = new[]
+            var students = new[] 
             {
                 new Student
                 {
@@ -55,7 +56,7 @@ namespace P01_StudentSystem
                 }
             };
 
-            dbContext.Students.AddRange(students);
+            context.Students.AddRange(students);
 
             //var courses = new[]
             //{
@@ -86,7 +87,7 @@ namespace P01_StudentSystem
             //    }
             //};
 
-            //dbContext.Courses.AddRange(courses);
+            //context.Courses.AddRange(courses);
 
             //var resources = new[]
             //{
@@ -115,7 +116,7 @@ namespace P01_StudentSystem
             //    }
             //};
 
-            //dbContext.Resources.AddRange(resources);
+            //context.Resources.AddRange(resources);
 
             //var homeworks = new[]
             //{
@@ -147,7 +148,7 @@ namespace P01_StudentSystem
             //    }
             //};
 
-            //dbContext.HomeworkSubmissions.AddRange(homeworks);
+            //context.HomeworkSubmissions.AddRange(homeworks);
 
             //var studentcourses = new[]
             //{
@@ -172,7 +173,7 @@ namespace P01_StudentSystem
 
             //dbContext.StudentCourses.AddRange(studentcourses);
 
-            dbContext.SaveChanges();
+            context.SaveChanges();
         }
     }
 }
