@@ -11,6 +11,7 @@ namespace P01_StudentSystem.Data.Models
         public Course()
         {
             Resources = new List<Resource>();
+            Students = new List<StudentCourse>();
         }
 
         [Key]
@@ -27,9 +28,11 @@ namespace P01_StudentSystem.Data.Models
 
         public DateTime EndDate { get; set; }
 
-        //[Column(TypeName = "MONEY(18,2)")]
+        //[Column(TypeName = "MONEY")]
         public decimal Price { get; set; }
 
         public List<Resource> Resources { get; set; }
+
+        public List<StudentCourse> Students { get; set; }
     }
 }
