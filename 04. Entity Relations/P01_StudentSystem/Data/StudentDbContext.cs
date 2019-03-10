@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using P01_StudentSystem.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace P01_StudentSystem.Data
 {
