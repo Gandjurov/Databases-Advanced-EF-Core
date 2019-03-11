@@ -10,8 +10,9 @@ namespace P01_StudentSystem.Data.Models
     {
         public Course()
         {
-            Resources = new List<Resource>();
-            Students = new List<StudentCourse>();
+            this.Resources = new List<Resource>();
+            this.StudentsEnrolled = new List<StudentCourse>();
+            this.HomeworkSubmissions = new List<Homework>();
         }
 
         [Key]
@@ -33,6 +34,8 @@ namespace P01_StudentSystem.Data.Models
 
         public List<Resource> Resources { get; set; }
 
-        public List<StudentCourse> Students { get; set; }
+        public ICollection<StudentCourse> StudentsEnrolled { get; set; }
+
+        public ICollection<Homework> HomeworkSubmissions { get; set; }
     }
 }

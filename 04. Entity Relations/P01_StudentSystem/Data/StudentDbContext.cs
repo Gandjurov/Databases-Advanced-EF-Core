@@ -29,8 +29,22 @@ namespace P01_StudentSystem.Data
             modelBuilder.Entity<Student>()
                         .OwnsOne(s => s.Name);
 
-            modelBuilder.Entity<StudentCourse>()
-                        .HasKey(s => new { s.StudentId, s.CourseId });
+            modelBuilder.Entity<StudentCourse>(entity =>
+            {
+                entity.HasKey(s => new { s.StudentId, s.CourseId });
+
+                entity.HasOne(e => e.Student)
+                      .WithMany(c => c.CourseEnrollments);
+
+                entity.HasOne(e => e.Course)
+                      .WithMany(c => c.StudentsEnrolled);
+
+
+
+            });
+                        
+
+
 
             //modelBuilder.Entity<Homework>(entity =>
             //{
