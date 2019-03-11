@@ -10,8 +10,8 @@ using P01_StudentSystem.Data;
 namespace P01_StudentSystem.Migrations
 {
     [DbContext(typeof(StudentDbContext))]
-    [Migration("20190310131737_HomeworksAdded")]
-    partial class HomeworksAdded
+    [Migration("20190311204931_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -128,12 +128,12 @@ namespace P01_StudentSystem.Migrations
             modelBuilder.Entity("P01_StudentSystem.Data.Models.Homework", b =>
                 {
                     b.HasOne("P01_StudentSystem.Data.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("HomeworkSubmissions")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("P01_StudentSystem.Data.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("HomeworkSubmissions")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -176,12 +176,12 @@ namespace P01_StudentSystem.Migrations
             modelBuilder.Entity("P01_StudentSystem.Data.Models.StudentCourse", b =>
                 {
                     b.HasOne("P01_StudentSystem.Data.Models.Course", "Course")
-                        .WithMany("Students")
+                        .WithMany("StudentsEnrolled")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("P01_StudentSystem.Data.Models.Student", "Student")
-                        .WithMany("StudentCourses")
+                        .WithMany("CourseEnrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

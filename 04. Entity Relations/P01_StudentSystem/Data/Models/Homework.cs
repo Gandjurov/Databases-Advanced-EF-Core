@@ -8,11 +8,6 @@ namespace P01_StudentSystem.Data.Models
 {
     public class Homework
     {
-        public Homework()
-        {
-            this.SubmissionTime = DateTime.Now;
-        }
-
         [Key]
         public int HomeworkId { get; set; }
 
@@ -23,7 +18,7 @@ namespace P01_StudentSystem.Data.Models
         public ContentType ContentType { get; set; }
 
         [Required]
-        public DateTime SubmissionTime { get; private set; }
+        public DateTime SubmissionTime { get; set; }
 
         public int StudentId { get; set; }
         [ForeignKey(nameof(StudentId))]

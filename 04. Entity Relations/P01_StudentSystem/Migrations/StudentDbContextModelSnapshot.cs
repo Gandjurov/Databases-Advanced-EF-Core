@@ -126,12 +126,12 @@ namespace P01_StudentSystem.Migrations
             modelBuilder.Entity("P01_StudentSystem.Data.Models.Homework", b =>
                 {
                     b.HasOne("P01_StudentSystem.Data.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("HomeworkSubmissions")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("P01_StudentSystem.Data.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("HomeworkSubmissions")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -174,12 +174,12 @@ namespace P01_StudentSystem.Migrations
             modelBuilder.Entity("P01_StudentSystem.Data.Models.StudentCourse", b =>
                 {
                     b.HasOne("P01_StudentSystem.Data.Models.Course", "Course")
-                        .WithMany("Students")
+                        .WithMany("StudentsEnrolled")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("P01_StudentSystem.Data.Models.Student", "Student")
-                        .WithMany("StudentCourses")
+                        .WithMany("CourseEnrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
