@@ -1,4 +1,5 @@
-﻿using P01_StudentSystem.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using P01_StudentSystem.Data;
 using P03_FootballBetting.Data.Models;
 using System;
 using System.Collections.Generic;
