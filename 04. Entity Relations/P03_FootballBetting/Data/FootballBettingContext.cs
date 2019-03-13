@@ -50,7 +50,61 @@ namespace P03_FootballBetting.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Team>(entity =>
+                {
+                    entity.Property(e => e.Initials)
+                          .HasColumnType("CHAR(3)")
+                          .IsRequired();
 
+                    entity.HasOne(e => e.PrimaryKitColor)
+                          .WithMany(pc => pc.PrimaryKitTeams)
+                          .HasForeignKey(e => e.PrimaryKitColorId)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(e => e.SecondaryKitColor)
+                          .WithMany(sk => sk.SecondaryKitTeams)
+                          .HasForeignKey(e => e.SecondaryKitColorId)
+                          .OnDelete(DeleteBehavior.Restrict);
+                    
+                });
+
+            modelBuilder
+                .Entity<Town>(entity =>
+                {
+                    entity.HasOne(e => e.Country)
+                          .WithMany(c => c.Towns)
+                          .HasForeignKey(e => e.CountryId);
+
+                });
+
+            modelBuilder
+                .Entity<Game>(entity =>
+                {
+                    entity.HasOne(e => e.HomeTeam)
+                          .WithMany(c => c.HomeGames)
+                          .HasForeignKey(e => e.HomeTeamId)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(e => e.AwayTeam)
+                          .WithMany(c => c.AwayGames)
+                          .HasForeignKey(e => e.AwayTeamId)
+                          .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder
+                .Entity<PlayerStatistic>(entity =>
+                {
+                    entity.HasKey(e => new { e.GameId, e.PlayerId });
+
+                    entity.HasOne(e => e.Player)
+                          .WithMany(p => p.PlayerStatistics)
+                          .HasForeignKey(e => e.PlayerId);
+
+                    entity.HasOne(e => e.Game)
+                          .WithMany(g => g.PlayerStatistics)
+                          .HasForeignKey(e => e.GameId);
+                });
         }
     }
 }

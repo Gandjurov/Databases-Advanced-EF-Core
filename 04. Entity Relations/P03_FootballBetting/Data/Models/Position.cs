@@ -7,6 +7,11 @@ namespace P03_FootballBetting.Data.Models
 {
     public class Position
     {
+        public Position()
+        {
+            this.Players = new List<Player>();
+        }
+
         [Key]
         public int PositionId { get; set; }
 

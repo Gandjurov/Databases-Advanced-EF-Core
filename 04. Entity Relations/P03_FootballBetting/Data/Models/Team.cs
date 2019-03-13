@@ -8,6 +8,13 @@ namespace P03_FootballBetting.Data.Models
 {
     public class Team
     {
+        public Team()
+        {
+            this.HomeGames = new List<Game>();
+            this.AwayGames = new List<Game>();
+            this.Players = new List<Player>();
+        }
+
         [Key]
         public int TeamId { get; set; }
 
@@ -34,6 +41,6 @@ namespace P03_FootballBetting.Data.Models
         [InverseProperty("AwayTeam")]
         public ICollection<Game> AwayGames { get; set; }
 
-        public ICollection<Player> Playes { get; set; }
+        public ICollection<Player> Players { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace P03_FootballBetting.Data.Models
     {
         public Game()
         {
+            this.Bets = new List<Bet>();
             this.Result = $"{this.HomeTeamGoals}:{this.AwayTeamGoals}";
             this.PlayerStatistics = new List<PlayerStatistic>();
         }
