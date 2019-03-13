@@ -147,7 +147,7 @@ namespace P01_StudentSystem
                 }
             };
 
-            context.Homeworks.AddRange(homeworks);
+            context.HomeworkSubmissions.AddRange(homeworks);
 
             var studentcourses = new[]
             {

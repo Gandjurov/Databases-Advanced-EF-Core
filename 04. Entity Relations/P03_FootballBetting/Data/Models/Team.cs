@@ -33,7 +33,7 @@ namespace P03_FootballBetting.Data.Models
         public Color SecondaryKitColor { get; set; }
 
         public int TownId { get; set; }
-        public Town town { get; set; }
+        public Town Town { get; set; }
 
         [InverseProperty("HomeTeam")]
         public ICollection<Game> HomeGames { get; set; }
