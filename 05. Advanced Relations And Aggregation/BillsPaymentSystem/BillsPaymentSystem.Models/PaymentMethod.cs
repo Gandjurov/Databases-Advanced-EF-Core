@@ -1,4 +1,5 @@
-﻿using BillsPaymentSystem.Models.Enums;
+﻿using BillsPaymentSystem.Models.Attributes;
+using BillsPaymentSystem.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,6 +15,7 @@ namespace BillsPaymentSystem.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
+        [Xor(nameof(CreditCardId))]
         public int? BankAccountId { get; set; }
         public BankAccount BankAccount { get; set; }
 
