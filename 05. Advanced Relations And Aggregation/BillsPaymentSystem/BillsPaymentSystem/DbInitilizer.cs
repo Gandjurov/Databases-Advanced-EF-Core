@@ -31,6 +31,7 @@ namespace BillsPaymentSystem.App
 
                 };
 
+
                 if (i % 3 == 0)
                 {
                     paymentMethod.CreditCardId = new Random().Next(1, 5);
@@ -44,7 +45,7 @@ namespace BillsPaymentSystem.App
                 {
                     paymentMethod.BankAccountId = new Random().Next(1, 5);
                 }
-                
+
                 if (!IsValid(paymentMethod))
                 {
                     continue;
@@ -86,7 +87,7 @@ namespace BillsPaymentSystem.App
 
         private static void SeedCreditCards(BillsPaymentSystemContext context)
         {
-            List<CreditCard> creditCards = new List<CreditCard>();
+            var creditCards = new List<CreditCard>();
 
             for (int i = 0; i < 8; i++)
             {
@@ -113,7 +114,7 @@ namespace BillsPaymentSystem.App
         private static void SeedUsers(BillsPaymentSystemContext context)
         {
             string[] firstNames = { "Gosho", "Pesho", "Ivan", "Kiro", null, "" };
-            string[] lastNames = { "Goshev", "Peshev", "Ivanov", "Kirov", null, "ERROR" };
+            string[] lastNames = { "Goshev", "Peshev", "Ivanov", "Kirov", null, "" };
             string[] emails = { "Gosho@abv.bg", "Pesho@abv.bg", "Ivan@abv.bg", "Kiro@abv.bg", null, "ERROR" };
             string[] passwords = { "sdgsgsg", "qtqetcbxcb", "derthjuerghwr", "xfheruerb", null, "ERROR" };
 
@@ -121,7 +122,7 @@ namespace BillsPaymentSystem.App
 
             for (int i = 0; i < firstNames.Length; i++)
             {
-                var user = new User
+                var user = new User()
                 {
                     FirstName = firstNames[i],
                     LastName = lastNames[i],
@@ -129,13 +130,13 @@ namespace BillsPaymentSystem.App
                     Password = passwords[i]
                 };
 
-                users.Add(user);
-
+                
                 if (!IsValid(user))
                 {
                     continue;
                 }
 
+                users.Add(user);
             }
 
             context.Users.AddRange(users);

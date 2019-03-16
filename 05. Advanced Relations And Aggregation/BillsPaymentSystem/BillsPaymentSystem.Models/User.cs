@@ -12,6 +12,7 @@ namespace BillsPaymentSystem.Models
             this.PaymentMethods = new HashSet<PaymentMethod>();
         }
 
+        [Key]
         public int UserId { get; set; }
 
         [Required]

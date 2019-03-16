@@ -2,12 +2,14 @@
 using BillsPaymentSystem.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace BillsPaymentSystem.Models
 {
     public class PaymentMethod
     {
+        [Key]
         public int Id { get; set; }
 
         public PaymentType Type { get; set; }
