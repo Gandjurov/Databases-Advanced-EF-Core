@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BillsPaymentSystem.Data\BillsPaymentSystem.Data.csproj" />
     <ProjectReference Include="..\BillsPaymentSystem.Models\BillsPaymentSystem.Models.csproj" />
   </ItemGroup>
 
