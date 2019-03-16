@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillsPaymentSystem", "BillsPaymentSystem\BillsPaymentSystem.csproj", "{FF9D9C2F-63A0-471D-B633-D8EBBB8DB59E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillsPaymentSystem.Data", "BillsPaymentSystem.Data\BillsPaymentSystem.Data.csproj", "{DDD03551-464A-4637-A1EB-EEB6ABCC914B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillsPaymentSystem.Models", "BillsPaymentSystem.Models\BillsPaymentSystem.Models.csproj", "{2A500F82-C205-4136-B85A-47D76D63A19D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{FF9D9C2F-63A0-471D-B633-D8EBBB8DB59E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF9D9C2F-63A0-471D-B633-D8EBBB8DB59E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF9D9C2F-63A0-471D-B633-D8EBBB8DB59E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD03551-464A-4637-A1EB-EEB6ABCC914B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD03551-464A-4637-A1EB-EEB6ABCC914B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD03551-464A-4637-A1EB-EEB6ABCC914B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD03551-464A-4637-A1EB-EEB6ABCC914B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A500F82-C205-4136-B85A-47D76D63A19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A500F82-C205-4136-B85A-47D76D63A19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A500F82-C205-4136-B85A-47D76D63A19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A500F82-C205-4136-B85A-47D76D63A19D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
