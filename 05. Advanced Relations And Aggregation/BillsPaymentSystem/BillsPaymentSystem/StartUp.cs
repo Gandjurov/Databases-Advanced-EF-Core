@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BillsPaymentSystem
+namespace BillsPaymentSystem.App
 {
     public class StartUp
     {
