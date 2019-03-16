@@ -1,4 +1,5 @@
-﻿using BillsPaymentSystem.Models;
+﻿using BillsPaymentSystem.Data.EntityConfigurations;
+using BillsPaymentSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,10 @@ namespace BillsPaymentSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new BankAccountConfig());
+            //modelBuilder.ApplyConfiguration(new CreditCardConfig());
+            //modelBuilder.ApplyConfiguration(new PaymentMethodConfig());
+            modelBuilder.ApplyConfiguration(new UserConfig());
         }
     }
 }
