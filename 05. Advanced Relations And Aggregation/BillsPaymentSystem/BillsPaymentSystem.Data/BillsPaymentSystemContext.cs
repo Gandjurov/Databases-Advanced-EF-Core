@@ -7,9 +7,9 @@ using System.Text;
 
 namespace BillsPaymentSystem.Data
 {
-    public class BillsPaymentSystemConfig : DbContext
+    public class BillsPaymentSystemContext : DbContext
     {
-        public BillsPaymentSystemConfig()
+        public BillsPaymentSystemContext()
         {
         }
 

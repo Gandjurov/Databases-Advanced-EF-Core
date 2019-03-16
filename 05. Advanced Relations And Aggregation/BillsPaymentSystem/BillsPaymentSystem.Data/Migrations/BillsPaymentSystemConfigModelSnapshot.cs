@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BillsPaymentSystem.Data.Migrations
 {
-    [DbContext(typeof(BillsPaymentSystemConfig))]
+    [DbContext(typeof(BillsPaymentSystemContext))]
     partial class BillsPaymentSystemConfigModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
