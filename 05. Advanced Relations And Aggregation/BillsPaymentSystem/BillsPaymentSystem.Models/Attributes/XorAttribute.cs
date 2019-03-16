@@ -21,12 +21,13 @@ namespace BillsPaymentSystem.Models.Attributes
                 .GetProperty(targetProperty)
                 .GetValue(validationContext.ObjectInstance);
 
-            if ((value == null) ^ (targetProperty == null))
+            if ((value == null) ^ (targetPropertyValue == null))
             {
-                return new ValidationResult("The two properties must have opposite values!");
+                return ValidationResult.Success;
+
             }
 
-            return ValidationResult.Success;
+            return new ValidationResult("The two properties must have opposite values!");
         }
     }
 }

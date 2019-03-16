@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BillsPaymentSystem.Data;
+using System;
 
 namespace BillsPaymentSystem.App
 {
@@ -6,7 +7,10 @@ namespace BillsPaymentSystem.App
     {
         public static void Main()
         {
-
+            using (BillsPaymentSystemContext context = new BillsPaymentSystemContext())
+            {
+                DbInitilizer.Seed(context);
+            }
         }
     }
 }

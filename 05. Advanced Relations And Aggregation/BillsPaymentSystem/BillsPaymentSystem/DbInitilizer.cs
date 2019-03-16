@@ -12,10 +12,10 @@ namespace BillsPaymentSystem.App
     {
         public static void Seed(BillsPaymentSystemContext context)
         {
-            SeedPaymentMethods(context);
             SeedUsers(context);
             SeedCreditCards(context);
             SeedBankAccounts(context);
+            SeedPaymentMethods(context);
         }
 
         private static void SeedPaymentMethods(BillsPaymentSystemContext context)
@@ -33,8 +33,8 @@ namespace BillsPaymentSystem.App
 
                 if (i % 3 == 0)
                 {
-                    paymentMethod.CreditCardId = 1;
-                    paymentMethod.BankAccountId = 1;
+                    paymentMethod.CreditCardId = new Random().Next(1, 5);
+                    paymentMethod.BankAccountId = new Random().Next(1, 5);
                 }
                 else if (i % 2 == 0)
                 {
@@ -44,11 +44,12 @@ namespace BillsPaymentSystem.App
                 {
                     paymentMethod.BankAccountId = new Random().Next(1, 5);
                 }
-
+                
                 if (!IsValid(paymentMethod))
                 {
                     continue;
                 }
+                
 
                 paymentMethods.Add(paymentMethod);
             }
