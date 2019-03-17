@@ -28,6 +28,7 @@ namespace BillsPaymentSystem.App.Core
             }
 
             var typeInstance = Activator.CreateInstance(type, context);
+            
 
             var result = ((ICommand)typeInstance).Execute(commandArgs);
 

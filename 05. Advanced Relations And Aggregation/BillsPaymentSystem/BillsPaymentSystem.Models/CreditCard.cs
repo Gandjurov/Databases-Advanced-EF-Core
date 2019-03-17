@@ -24,5 +24,21 @@ namespace BillsPaymentSystem.Models
         public DateTime ExpirationDate { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }
+
+        public void Deposit(decimal amount)
+        {
+            if (amount > 0)
+            {
+                this.MoneyOwed -= amount;
+            }
+        }
+
+        public void WithDraw(decimal amount)
+        {
+            if (this.LimitLeft - amount >= 0)
+            {
+                this.MoneyOwed += amount;
+            }
+        }
     }
 }

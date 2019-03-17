@@ -22,5 +22,21 @@ namespace BillsPaymentSystem.Models
         public string SWIFT { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }
+
+        public void Deposit(decimal amount)
+        {
+            if (amount > 0)
+            {
+                this.Balance += amount;
+            }
+        }
+
+        public void WithDraw(decimal amount)
+        {
+            if (this.Balance - amount > 0)
+            {
+                this.Balance -= amount;
+            }
+        }
     }
 }

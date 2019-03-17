@@ -1,7 +1,9 @@
 ﻿using BillsPaymentSystem.App.Core;
 using BillsPaymentSystem.App.Core.Contracts;
 using BillsPaymentSystem.Data;
+using BillsPaymentSystem.Models;
 using System;
+using System.Linq;
 
 namespace BillsPaymentSystem.App
 {
@@ -13,11 +15,14 @@ namespace BillsPaymentSystem.App
             //{
             //    DbInitilizer.Seed(context);
             //}
+            
             ICommandInterpreter commandInterpreter = new CommandInterpreter();
 
             IEngine engine = new Engine(commandInterpreter);
             engine.Run();
 
         }
+
+        
     }
 }
