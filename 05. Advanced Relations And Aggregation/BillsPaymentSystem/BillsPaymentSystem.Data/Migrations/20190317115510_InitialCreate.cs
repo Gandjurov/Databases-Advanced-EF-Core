@@ -9,22 +9,22 @@ namespace BillsPaymentSystem.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "BankAccount",
+                name: "BankAccounts",
                 columns: table => new
                 {
                     BankAccountId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Balance = table.Column<decimal>(nullable: false),
                     BankName = table.Column<string>(maxLength: 50, nullable: false),
-                    SWIFT = table.Column<string>(maxLength: 20, nullable: false)
+                    SWIFT = table.Column<string>(unicode: false, maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccount", x => x.BankAccountId);
+                    table.PrimaryKey("PK_BankAccounts", x => x.BankAccountId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CreditCard",
+                name: "CreditCards",
                 columns: table => new
                 {
                     CreditCardId = table.Column<int>(nullable: false)
@@ -35,7 +35,7 @@ namespace BillsPaymentSystem.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CreditCard", x => x.CreditCardId);
+                    table.PrimaryKey("PK_CreditCards", x => x.CreditCardId);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,8 +46,8 @@ namespace BillsPaymentSystem.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
-                    Email = table.Column<string>(maxLength: 80, nullable: false),
-                    Password = table.Column<string>(maxLength: 25, nullable: false)
+                    Email = table.Column<string>(unicode: false, maxLength: 80, nullable: false),
+                    Password = table.Column<string>(unicode: false, maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +55,7 @@ namespace BillsPaymentSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentMethod",
+                name: "PaymentMethods",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -67,21 +67,21 @@ namespace BillsPaymentSystem.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentMethod", x => x.Id);
+                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PaymentMethod_BankAccount_BankAccountId",
+                        name: "FK_PaymentMethods_BankAccounts_BankAccountId",
                         column: x => x.BankAccountId,
-                        principalTable: "BankAccount",
+                        principalTable: "BankAccounts",
                         principalColumn: "BankAccountId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PaymentMethod_CreditCard_CreditCardId",
+                        name: "FK_PaymentMethods_CreditCards_CreditCardId",
                         column: x => x.CreditCardId,
-                        principalTable: "CreditCard",
+                        principalTable: "CreditCards",
                         principalColumn: "CreditCardId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PaymentMethod_Users_UserId",
+                        name: "FK_PaymentMethods_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -89,35 +89,35 @@ namespace BillsPaymentSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentMethod_BankAccountId",
-                table: "PaymentMethod",
+                name: "IX_PaymentMethods_BankAccountId",
+                table: "PaymentMethods",
                 column: "BankAccountId",
                 unique: true,
                 filter: "[BankAccountId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentMethod_CreditCardId",
-                table: "PaymentMethod",
+                name: "IX_PaymentMethods_CreditCardId",
+                table: "PaymentMethods",
                 column: "CreditCardId",
                 unique: true,
                 filter: "[CreditCardId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentMethod_UserId",
-                table: "PaymentMethod",
+                name: "IX_PaymentMethods_UserId",
+                table: "PaymentMethods",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PaymentMethod");
+                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
-                name: "BankAccount");
+                name: "BankAccounts");
 
             migrationBuilder.DropTable(
-                name: "CreditCard");
+                name: "CreditCards");
 
             migrationBuilder.DropTable(
                 name: "Users");

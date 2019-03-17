@@ -4,16 +4,14 @@ using BillsPaymentSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BillsPaymentSystem.Data.Migrations
 {
     [DbContext(typeof(BillsPaymentSystemContext))]
-    [Migration("20190316145652_InitialCreate")]
-    partial class InitialCreate
+    partial class BillsPaymentSystemContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,16 +29,16 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.Property<string>("BankName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
+                        .HasMaxLength(50);
 
                     b.Property<string>("SWIFT")
                         .IsRequired()
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .IsUnicode(false);
 
                     b.HasKey("BankAccountId");
 
-                    b.ToTable("BankAccount");
+                    b.ToTable("BankAccounts");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.CreditCard", b =>
@@ -57,7 +55,7 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.HasKey("CreditCardId");
 
-                    b.ToTable("CreditCard");
+                    b.ToTable("CreditCards");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.PaymentMethod", b =>
@@ -86,7 +84,7 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PaymentMethod");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.User", b =>
@@ -97,21 +95,21 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(80);
+                        .HasMaxLength(80)
+                        .IsUnicode(false);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
+                        .HasMaxLength(50);
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
+                        .HasMaxLength(50);
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(25);
+                        .HasMaxLength(25)
+                        .IsUnicode(false);
 
                     b.HasKey("UserId");
 

@@ -4,14 +4,16 @@ using BillsPaymentSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BillsPaymentSystem.Data.Migrations
 {
     [DbContext(typeof(BillsPaymentSystemContext))]
-    partial class BillsPaymentSystemConfigModelSnapshot : ModelSnapshot
+    [Migration("20190317115510_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.HasKey("BankAccountId");
 
-                    b.ToTable("BankAccount");
+                    b.ToTable("BankAccounts");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.CreditCard", b =>
@@ -55,7 +57,7 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.HasKey("CreditCardId");
 
-                    b.ToTable("CreditCard");
+                    b.ToTable("CreditCards");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.PaymentMethod", b =>
@@ -84,7 +86,7 @@ namespace BillsPaymentSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PaymentMethod");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("BillsPaymentSystem.Models.User", b =>

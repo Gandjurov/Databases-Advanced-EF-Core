@@ -1,4 +1,6 @@
-﻿using BillsPaymentSystem.Data;
+﻿using BillsPaymentSystem.App.Core;
+using BillsPaymentSystem.App.Core.Contracts;
+using BillsPaymentSystem.Data;
 using System;
 
 namespace BillsPaymentSystem.App
@@ -7,10 +9,8 @@ namespace BillsPaymentSystem.App
     {
         public static void Main()
         {
-            using (BillsPaymentSystemContext context = new BillsPaymentSystemContext())
-            {
-                DbInitilizer.Seed(context);
-            }
+            IEngine engine = new Engine();
+            engine.Run();
         }
     }
 }

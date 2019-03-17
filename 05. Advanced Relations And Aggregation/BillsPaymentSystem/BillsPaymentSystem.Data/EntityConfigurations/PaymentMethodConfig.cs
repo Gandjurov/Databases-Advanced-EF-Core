@@ -11,7 +11,7 @@ namespace BillsPaymentSystem.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<PaymentMethod> builder)
         {
-
+            throw new InvalidOperationException();
         }
     }
 }

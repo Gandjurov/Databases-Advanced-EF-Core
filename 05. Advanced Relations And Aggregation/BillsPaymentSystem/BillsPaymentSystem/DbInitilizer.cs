@@ -27,8 +27,7 @@ namespace BillsPaymentSystem.App
                 var paymentMethod = new PaymentMethod()
                 {
                     UserId = new Random().Next(1, 5),
-                    Type = (PaymentType)new Random().Next(0, 2),
-
+                    Type = (PaymentType)new Random().Next(0, 2)
                 };
 
 
