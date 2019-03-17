@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BillsPaymentSystem.App.Core.Command.Contracts
 {
-    public interface IUserInfoComment
+    public interface ICommand
     {
         string Execute(string[] args);
     }
