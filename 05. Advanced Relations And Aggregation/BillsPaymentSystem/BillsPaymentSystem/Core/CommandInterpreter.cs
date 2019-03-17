@@ -15,8 +15,6 @@ namespace BillsPaymentSystem.App.Core
 
         public string Read(string[] args, BillsPaymentSystemContext context)
         {
-
-        
             string command = args[0];
             string[] commandArgs = args.Skip(1).ToArray();
 

@@ -9,14 +9,15 @@ namespace BillsPaymentSystem.App
     {
         public static void Main()
         {
-            using (BillsPaymentSystemContext context = new BillsPaymentSystemContext())
-            {
-                DbInitilizer.Seed(context);
-            }
-            //ICommandInterpreter commandInterpreter = new CommandInterpreter();
-            
-            //IEngine engine = new Engine(commandInterpreter);
-            //engine.Run();
+            //using (BillsPaymentSystemContext context = new BillsPaymentSystemContext())
+            //{
+            //    DbInitilizer.Seed(context);
+            //}
+            ICommandInterpreter commandInterpreter = new CommandInterpreter();
+
+            IEngine engine = new Engine(commandInterpreter);
+            engine.Run();
+
         }
     }
 }

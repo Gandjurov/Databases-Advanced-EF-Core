@@ -12,9 +12,9 @@ namespace BillsPaymentSystem.App
     {
         public static void Seed(BillsPaymentSystemContext context)
         {
-            //SeedUsers(context);
-            //SeedCreditCards(context);
-            //SeedBankAccounts(context);
+            SeedUsers(context);
+            SeedCreditCards(context);
+            SeedBankAccounts(context);
             SeedPaymentMethods(context);
         }
 

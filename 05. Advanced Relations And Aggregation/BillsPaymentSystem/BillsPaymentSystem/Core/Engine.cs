@@ -17,8 +17,6 @@ namespace BillsPaymentSystem.App.Core
 
         public void Run()
         {
-            StringBuilder sb = new StringBuilder();
-
             while (true)
             {
                 string[] inputParams = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -28,10 +26,7 @@ namespace BillsPaymentSystem.App.Core
                     string result = this.commandInterpreter.Read(inputParams, context);
                     Console.WriteLine(result);
                 }
-                
             }
-
-
         }
     }
 }
