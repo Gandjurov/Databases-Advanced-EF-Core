@@ -12,9 +12,9 @@ namespace BillsPaymentSystem.App
     {
         public static void Seed(BillsPaymentSystemContext context)
         {
-            SeedUsers(context);
-            SeedCreditCards(context);
-            SeedBankAccounts(context);
+            //SeedUsers(context);
+            //SeedCreditCards(context);
+            //SeedBankAccounts(context);
             SeedPaymentMethods(context);
         }
 
@@ -116,49 +116,58 @@ namespace BillsPaymentSystem.App
             context.SaveChanges();
 
         }
-        
+
         private static void SeedPaymentMethods(BillsPaymentSystemContext context)
         {
+            PaymentType[] types =
+                {
+                PaymentType.CreditCard,
+                PaymentType.BankAccount,
+                PaymentType.CreditCard,
+                PaymentType.BankAccount
+            };
+
+
             List<PaymentMethod> paymentMethods = new List<PaymentMethod>();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < types.Length; i++)
             {
                 var paymentMethod = new PaymentMethod()
                 {
-                    UserId = new Random().Next(1, 5),
-                    Type = (PaymentType)new Random().Next(0, 2)
+                    UserId = i,
+                    Type = types[i],
                 };
+                paymentMethod.CreditCardId = new Random().Next(1, 2);
+                paymentMethod.BankAccountId = new Random().Next(1, 2);
 
-                paymentMethod.CreditCardId = 1;
-                paymentMethod.BankAccountId = 2;
-
-                //if (i % 3 == 0)
-                //{
-                //    paymentMethod.CreditCardId = new Random().Next(1, 5);
-                //    paymentMethod.BankAccountId = new Random().Next(1, 5);
-                //}
-                //else if (i % 2 == 0)
-                //{
-                //    paymentMethod.CreditCardId = new Random().Next(1, 5);
-                //}
-                //else
-                //{
-                //    paymentMethod.BankAccountId = new Random().Next(1, 5);
-                //}
 
                 if (!IsValid(paymentMethod))
                 {
                     continue;
                 }
-                
 
                 paymentMethods.Add(paymentMethod);
             }
-
             context.PaymentMethods.AddRange(paymentMethods);
             context.SaveChanges();
+
+            //if (i % 3 == 0)
+            //{
+            //    paymentMethod.CreditCardId = new Random().Next(1, 5);
+            //    paymentMethod.BankAccountId = new Random().Next(1, 5);
+            //}
+            //else if (i % 2 == 0)
+            //{
+            //    paymentMethod.CreditCardId = new Random().Next(1, 5);
+            //}
+            //else
+            //{
+            //    paymentMethod.BankAccountId = new Random().Next(1, 5);
+            //}
+
+
         }
-        
+
         private static bool IsValid(object entity)
         {
             var validationContext = new ValidationContext(entity);
@@ -170,3 +179,4 @@ namespace BillsPaymentSystem.App
         }
     }
 }
+
