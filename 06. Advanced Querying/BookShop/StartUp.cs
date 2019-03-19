@@ -26,7 +26,13 @@
                 //string input = "horror mystery drama";
                 //var result = GetBooksByCategory(db, input);
 
-                var result = GetBooksReleasedBefore(db, "12-04-1992");
+                //var result = GetBooksReleasedBefore(db, "12-04-1992");
+
+                //var stringInput = "dy";
+                //var result = GetAuthorNamesEndingIn(db, stringInput);
+
+                var stringInput = "sK";
+                var result = GetBookTitlesContaining(db, stringInput);
 
                 Console.WriteLine(result);
 
@@ -122,6 +128,36 @@
                    .ToList();
 
             var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} - {b.EditionType} - ${b.Price:f2}"));
+
+            return result;
+        }
+
+        //07.	Author Search
+        public static string GetAuthorNamesEndingIn(BookShopContext context, string input)
+        {
+            var authors = context.Authors
+                                .Where(a => a.FirstName.EndsWith(input))
+                                .Select(a => $"{a.FirstName} {a.LastName}")
+                                .OrderBy(a => a)
+                                .ToList();
+
+            var result = string.Join(Environment.NewLine, authors);
+
+            return result;
+        }
+
+        //08.	Book Search
+        public static string GetBookTitlesContaining(BookShopContext context, string input)
+        {
+            var inputString = input.ToLower();
+
+            var books = context.Books
+                               .Where(b => b.Title.ToLower().Contains(inputString))
+                               .Select(b => b.Title)
+                               .OrderBy(t => t)
+                               .ToList();
+
+            var result = string.Join(Environment.NewLine, books);
 
             return result;
         }
