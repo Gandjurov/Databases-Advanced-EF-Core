@@ -37,7 +37,10 @@
                 //var stringInput = "po";
                 //var result = GetBooksByAuthor(db, stringInput);
 
-                var result = CountBooks(db, 12);
+                //var result = CountBooks(db, 12);
+
+
+                var result = CountCopiesByAuthor(db);
 
                 Console.WriteLine(result);
 
@@ -64,10 +67,10 @@
         public static string GetGoldenBooks(BookShopContext context)
         {
             var books = context.Books
-                   .Where(b => b.EditionType == EditionType.Gold && b.Copies < 5000)
-                   .OrderBy(b => b.BookId)
-                   .Select(b => b.Title)
-                   .ToList();
+                               .Where(b => b.EditionType == EditionType.Gold && b.Copies < 5000)
+                               .OrderBy(b => b.BookId)
+                               .Select(b => b.Title)
+                               .ToList();
 
             var result = string.Join(Environment.NewLine, books);
 
@@ -93,10 +96,10 @@
         public static string GetBooksNotReleasedIn(BookShopContext context, int year)
         {
             var books = context.Books
-                   .Where(b => b.ReleaseDate.Value.Year != year)
-                   .OrderBy(b => b.BookId)
-                   .Select(b => b.Title)
-                   .ToList();
+                               .Where(b => b.ReleaseDate.Value.Year != year)
+                               .OrderBy(b => b.BookId)
+                               .Select(b => b.Title)
+                               .ToList();
 
             var result = string.Join(Environment.NewLine, books);
 
@@ -127,10 +130,10 @@
             DateTime releaseDate = DateTime.ParseExact(date, "dd-MM-yyyy", null);
 
             var books = context.Books
-                   .Where(b => b.ReleaseDate < releaseDate)
-                   .OrderByDescending(b => b.ReleaseDate)
-                   .Select(b => new { b.Title, b.EditionType, b.Price })
-                   .ToList();
+                               .Where(b => b.ReleaseDate < releaseDate)
+                               .OrderByDescending(b => b.ReleaseDate)
+                               .Select(b => new { b.Title, b.EditionType, b.Price })
+                               .ToList();
 
             var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} - {b.EditionType} - ${b.Price:f2}"));
 
@@ -173,10 +176,10 @@
             var inputString = input.ToLower();
 
             var books = context.Books
-                   .Where(b => b.Author.LastName.ToLower().StartsWith(inputString))
-                   .OrderBy(b => b.BookId)
-                   .Select(b => new { b.Title, b.Author })
-                   .ToList();
+                               .Where(b => b.Author.LastName.ToLower().StartsWith(inputString))
+                               .OrderBy(b => b.BookId)
+                               .Select(b => new { b.Title, b.Author })
+                               .ToList();
 
             var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} ({b.Author.FirstName} {b.Author.LastName})"));
 
@@ -192,6 +195,22 @@
             
 
             return books;
+        }
+
+        //11.	Total Book Copies
+        public static string CountCopiesByAuthor(BookShopContext context)
+        {
+            var authors = context.Authors
+                    .Select(a => new
+                    {
+                        Name = $"{a.FirstName} {a.LastName}",
+                        Copies = a.Books.Select(b => b.Copies).Sum()
+                    })
+                    .OrderByDescending(a => a.Copies)
+                    .ToList();
+
+            var result = string.Join(Environment.NewLine, authors.Select(c => $"{c.Name} - {c.Copies}"));
+            return result;
         }
     }
 }
