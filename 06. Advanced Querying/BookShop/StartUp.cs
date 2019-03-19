@@ -34,8 +34,10 @@
                 //var stringInput = "sK";
                 //var result = GetBookTitlesContaining(db, stringInput);
 
-                var stringInput = "po";
-                var result = GetBooksByAuthor(db, stringInput);
+                //var stringInput = "po";
+                //var result = GetBooksByAuthor(db, stringInput);
+
+                var result = CountBooks(db, 12);
 
                 Console.WriteLine(result);
 
@@ -179,6 +181,17 @@
             var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} ({b.Author.FirstName} {b.Author.LastName})"));
 
             return result;
+        }
+
+        //10.	Count Books
+        public static int CountBooks(BookShopContext context, int lengthCheck)
+        {
+            var books = context.Books
+                   .Where(b => b.Title.Count() > lengthCheck)
+                   .Count();
+            
+
+            return books;
         }
     }
 }
