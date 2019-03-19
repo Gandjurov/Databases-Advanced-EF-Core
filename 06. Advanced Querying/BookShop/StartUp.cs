@@ -18,7 +18,9 @@
 
                 //var result = GetGoldenBooks(db);
 
-                var result = GetBooksByPrice(db);
+                //var result = GetBooksByPrice(db);
+                
+                var result = GetBooksNotReleasedIn(db, 1998);
 
                 Console.WriteLine(result);
 
@@ -63,6 +65,19 @@
 
 
             var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} - ${b.Price:F2}"));
+
+            return result;
+        }
+
+        public static string GetBooksNotReleasedIn(BookShopContext context, int year)
+        {
+            var books = context.Books
+                   .Where(b => b.ReleaseDate.Value.Year != year)
+                   .OrderBy(b => b.BookId)
+                   .Select(b => b.Title)
+                   .ToList();
+
+            var result = string.Join(Environment.NewLine, books);
 
             return result;
         }
