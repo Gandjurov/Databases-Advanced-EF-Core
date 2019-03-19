@@ -16,7 +16,9 @@
 
                 //var result = GetBooksByAgeRestriction(db, "teEN");
 
-                var result = GetGoldenBooks(db);
+                //var result = GetGoldenBooks(db);
+
+                var result = GetBooksByPrice(db);
 
                 Console.WriteLine(result);
 
@@ -47,6 +49,20 @@
                    .ToList();
 
             var result = string.Join(Environment.NewLine, books);
+
+            return result;
+        }
+
+        public static string GetBooksByPrice(BookShopContext context)
+        {
+            var books = context.Books
+                               .Where(b => b.Price > 40)
+                               .OrderByDescending(x => x.Price)
+                               .Select(b => new { b.Title, b.Price })
+                               .ToList();
+
+
+            var result = string.Join(Environment.NewLine, books.Select(b => $"{b.Title} - ${b.Price:F2}"));
 
             return result;
         }
