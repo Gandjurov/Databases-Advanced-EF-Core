@@ -14,7 +14,9 @@
             {
                 //DbInitializer.ResetDatabase(db);
 
-                var result = GetBooksByAgeRestriction(db, "teEN");
+                //var result = GetBooksByAgeRestriction(db, "teEN");
+
+                var result = GetGoldenBooks(db);
 
                 Console.WriteLine(result);
 
@@ -30,6 +32,19 @@
                                .Select(t => t.Title)
                                .OrderBy(x => x)
                                .ToList();
+
+            var result = string.Join(Environment.NewLine, books);
+
+            return result;
+        }
+
+        public static string GetGoldenBooks(BookShopContext context)
+        {
+            var books = context.Books
+                   .Where(b => b.EditionType == EditionType.Gold && b.Copies < 5000)
+                   .OrderBy(b => b.BookId)
+                   .Select(b => b.Title)
+                   .ToList();
 
             var result = string.Join(Environment.NewLine, books);
 
