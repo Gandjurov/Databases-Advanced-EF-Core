@@ -4,6 +4,7 @@
     using Data;
     using Initializer;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public class StartUp
@@ -19,8 +20,11 @@
                 //var result = GetGoldenBooks(db);
 
                 //var result = GetBooksByPrice(db);
-                
-                var result = GetBooksNotReleasedIn(db, 1998);
+
+                //var result = GetBooksNotReleasedIn(db, 1998);
+
+                string input = "horror mystery drama";
+                var result = GetBooksByCategory(db, input);
 
                 Console.WriteLine(result);
 
@@ -76,6 +80,23 @@
                    .OrderBy(b => b.BookId)
                    .Select(b => b.Title)
                    .ToList();
+
+            var result = string.Join(Environment.NewLine, books);
+
+            return result;
+        }
+
+        public static string GetBooksByCategory(BookShopContext context, string input)
+        {
+
+            string[] categories = input.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(c => c.ToLower()).ToArray();
+            var books = context.Books
+                               .Where(b => b.BookCategories
+                                    .Any(bc => categories.Contains(bc.Category.Name.ToLower())))
+                               .OrderBy(b => b.Title)
+                               .Select(b => b.Title)
+                               .ToList();
 
             var result = string.Join(Environment.NewLine, books);
 
