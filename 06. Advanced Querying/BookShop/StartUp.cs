@@ -228,7 +228,7 @@
                                           .Select(c => new
                                           {
                                               c.Name,
-                                              Profit = c.CategoryBooks.Select(cb => cb.Book.Copies * cb.Book.Price).Sum()
+                                              Profit = c.CategoryBooks.Sum(cb => cb.Book.Copies * cb.Book.Price)
                                           })
                                           .OrderByDescending(c => c.Profit)
                                           .ThenBy(c => c.Name)
@@ -253,7 +253,7 @@
                                           .Select(cb => cb.Book)
                                           .OrderByDescending(cb => cb.ReleaseDate)
                                           .Take(3)
-                                                        
+                                          .ToList()     
                               })
                               .ToList();
 
