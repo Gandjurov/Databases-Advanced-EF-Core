@@ -45,7 +45,9 @@
 
                 //var result = GetTotalProfitByCategory(db);
 
-                var result = GetMostRecentBooks(db);
+                //var result = GetMostRecentBooks(db);
+
+                var result = RemoveBooks(db);
                 Console.WriteLine(result);
 
             }
@@ -273,9 +275,16 @@
         }
 
         //15.	Remove Books
-        //public static int RemoveBooks(BookShopContext context)
-        //{
+        public static int RemoveBooks(BookShopContext context)
+        {
+            var booksForDel = context.Books
+                                     .Where(b => b.Copies < 4200)
+                                     .ToList();
 
-        //}
+            context.RemoveRange(booksForDel);
+            context.SaveChanges();
+
+            return booksForDel.Count();
+        }
     }
 }
