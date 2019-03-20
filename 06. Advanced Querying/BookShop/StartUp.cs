@@ -6,6 +6,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
     public class StartUp
     {
@@ -42,8 +43,9 @@
 
                 //var result = CountCopiesByAuthor(db);
 
-                var result = GetTotalProfitByCategory(db);
-                
+                //var result = GetTotalProfitByCategory(db);
+
+                var result = GetMostRecentBooks(db);
                 Console.WriteLine(result);
 
             }
@@ -218,8 +220,6 @@
         //12.	Profit by Category
         public static string GetTotalProfitByCategory(BookShopContext context)
         {
-            decimal totalProfit;
-
             var profitByCategory = context.Categories
                                           .Select(c => new
                                           {
@@ -232,6 +232,32 @@
 
 
             var result = string.Join(Environment.NewLine, profitByCategory.Select(p => $"{p.Name} ${p.Profit:F2}"));
+            return result;
+        }
+
+        //13.	Most Recent Books
+        public static string GetMostRecentBooks(BookShopContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var booksByCategory = context.Categories
+                              .OrderBy(c => c.Name)
+                              .Select(c => new
+                              {
+                                  c.Name,
+                                  book = c.CategoryBooks
+                                          .Select(cb => cb.Book)
+                                          .OrderByDescending(cb => cb.ReleaseDate)
+                                          .Take(3)
+                                                        
+                              })
+                              .ToList();
+
+            var result = string.Join(Environment.NewLine, booksByCategory.Select(c => $"--{c.Name}" +
+            $"{Environment.NewLine}" +
+            $"{String.Join(Environment.NewLine, c.book.Select(b => $"{b.Title} ({b.ReleaseDate.Value.Year})"))}"
+            ));
+
             return result;
         }
     }
