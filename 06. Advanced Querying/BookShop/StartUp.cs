@@ -40,8 +40,10 @@
                 //var result = CountBooks(db, 12);
 
 
-                var result = CountCopiesByAuthor(db);
+                //var result = CountCopiesByAuthor(db);
 
+                var result = GetTotalProfitByCategory(db);
+                
                 Console.WriteLine(result);
 
             }
@@ -210,6 +212,26 @@
                     .ToList();
 
             var result = string.Join(Environment.NewLine, authors.Select(c => $"{c.Name} - {c.Copies}"));
+            return result;
+        }
+
+        //12.	Profit by Category
+        public static string GetTotalProfitByCategory(BookShopContext context)
+        {
+            decimal totalProfit;
+
+            var profitByCategory = context.Categories
+                                          .Select(c => new
+                                          {
+                                              c.Name,
+                                              Profit = c.CategoryBooks.Select(cb => cb.Book.Copies * cb.Book.Price).Sum()
+                                          })
+                                          .OrderByDescending(c => c.Profit)
+                                          .ThenBy(c => c.Name)
+                                          .ToList();
+
+
+            var result = string.Join(Environment.NewLine, profitByCategory.Select(p => $"{p.Name} ${p.Profit:F2}"));
             return result;
         }
     }
