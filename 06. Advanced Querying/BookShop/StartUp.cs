@@ -3,6 +3,7 @@
     using BookShop.Models.Enums;
     using Data;
     using Initializer;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -183,6 +184,7 @@
 
             var books = context.Books
                                .Where(b => b.Author.LastName.ToLower().StartsWith(inputString))
+                               //.Where(a => EF.Functions.Like(a.Author.LastName, $"{inputString}%"))
                                .OrderBy(b => b.BookId)
                                .Select(b => new { b.Title, b.Author })
                                .ToList();
