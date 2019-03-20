@@ -26,6 +26,25 @@
                     Console.WriteLine(bookCategory.Book.Title);
                 }
 
+
+
+                //Include/ThenInclude example:
+                // If we should update existing data, can use Include/ThenInclude, and Select/SelectMany will unnecessary here.
+
+                //var books = db.Books
+                //              .Include(x => x.BookCategories)
+                //              .ThenInclude(x => x.Book)
+                //              .Include(x => x.BookCategories)
+                //              .ThenInclude(x => x.Category);
+
+                //foreach (var book in books)
+                //{
+                //    foreach (var category in book.BookCategories)
+                //    {
+                //        category.Category.Name = "Ivan";
+                //    }
+                //}
+
                 
                 //DbInitializer.ResetDatabase(db);
 
