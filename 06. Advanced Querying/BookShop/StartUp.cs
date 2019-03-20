@@ -15,6 +15,18 @@
         {
             using (var db = new BookShopContext())
             {
+                //Lazy Loading example:
+
+                var booksSelectMany = db.Books
+                                       .SelectMany(x => x.BookCategories)
+                                       .ToList();
+
+                foreach (var bookCategory in booksSelectMany)
+                {
+                    Console.WriteLine(bookCategory.Book.Title);
+                }
+
+                
                 //DbInitializer.ResetDatabase(db);
 
                 //var result = GetBooksByAgeRestriction(db, "teEN");
@@ -48,8 +60,8 @@
 
                 //var result = GetMostRecentBooks(db);
 
-                var result = RemoveBooks(db);
-                Console.WriteLine(result);
+                //var result = RemoveBooks(db);
+                //Console.WriteLine(result);
 
             }
         }

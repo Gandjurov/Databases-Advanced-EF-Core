@@ -12,16 +12,18 @@
 		public BookShopContext(DbContextOptions options)
 			:base(options) { }
 		
-        public DbSet<Book> Books { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<BookCategory> BooksCategories { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<BookCategory> BooksCategories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Configuration.ConnectionString);
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration.ConnectionString);
             }
         }
 
