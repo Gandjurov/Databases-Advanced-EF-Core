@@ -260,5 +260,22 @@
 
             return result;
         }
+
+        //14.	Increase Prices
+        public static void IncreasePrices(BookShopContext context)
+        {
+            context.Books
+                   .Where(b => b.ReleaseDate.Value.Year < 2010)
+                   .ToList()
+                   .ForEach(b => b.Price += 5);
+
+            context.SaveChanges();
+        }
+
+        //15.	Remove Books
+        //public static int RemoveBooks(BookShopContext context)
+        //{
+
+        //}
     }
 }
