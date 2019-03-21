@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,6 +18,25 @@ namespace CustomAutoMapper
                 || type.IsPrimitive
                 || IsNullable(type) && IsPrimitive(Nullable.GetUnderlyingType(type))
                 || type.IsEnum;
+        }
+
+        public static bool IsGenericCollection(Type type)
+        {
+            return
+                (type.IsGenericType && (
+                type.GetGenericTypeDefinition() == typeof(List<>) ||
+                type.GetGenericTypeDefinition() == typeof(ICollection<>) ||
+                 type.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+                type.GetGenericTypeDefinition() == typeof(IList<>))) ||
+                typeof(IList<>).IsAssignableFrom(type) ||
+                typeof(HashSet<>).IsAssignableFrom(type);
+        }
+
+        public static bool IsNonGenericCollection(Type type)
+        {
+            return
+              type.IsArray || type == typeof(ArrayList) ||
+                typeof(IList).IsAssignableFrom(type);
         }
 
         public static bool IsNullable(Type type)
