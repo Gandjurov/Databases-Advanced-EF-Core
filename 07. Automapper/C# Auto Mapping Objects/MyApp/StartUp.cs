@@ -23,6 +23,7 @@ namespace MyApp
             //Service Layer
         }
 
+        //Dependancy Conteiner
         private static IServiceProvider ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
