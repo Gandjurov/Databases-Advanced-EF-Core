@@ -41,14 +41,11 @@ namespace MyApp.Core
                                                .Select(x => x.ParameterType)
                                                .ToArray();
 
-            var services = constructorParams.Select(this.serviceProvider.GetServices)
+            var services = constructorParams.Select(this.serviceProvider.GetService)
                                             .ToArray();
-
-            //TODO Not so sure???
-            //var command = (ICommand)constructor.Invoke(new object[] { services });
+            
             var command = (ICommand)Activator.CreateInstance(type, services);
-
-
+            
             string result = command.Execute(commandParams);
 
             return result;

@@ -22,6 +22,8 @@ namespace MyApp.Core.Commands
 
         public string Execute(string[] inputArgs)
         {
+            //this.context.Database.EnsureCreated();
+
             string firstName = inputArgs[0];
             string lastName = inputArgs[1];
             decimal salary = decimal.Parse(inputArgs[2]);
