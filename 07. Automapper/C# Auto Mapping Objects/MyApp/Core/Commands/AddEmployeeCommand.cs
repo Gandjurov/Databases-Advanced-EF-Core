@@ -37,7 +37,7 @@ namespace MyApp.Core.Commands
                 Salary = salary
             };
 
-            this.context.Add(employee);
+            this.context.Employees.Add(employee);
             this.context.SaveChanges();
 
             var employeeDto = this.mapper.CreateMappedObject<EmployeeDto>(employee);
