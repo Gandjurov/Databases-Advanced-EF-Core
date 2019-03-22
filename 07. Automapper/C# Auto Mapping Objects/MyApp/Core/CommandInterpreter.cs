@@ -43,9 +43,10 @@ namespace MyApp.Core
 
             var services = constructorParams.Select(this.serviceProvider.GetService)
                                             .ToArray();
+
             
-            var command = (ICommand)Activator.CreateInstance(type, services);
-            
+            var command = (ICommand)constructor.Invoke(services);
+
             string result = command.Execute(commandParams);
 
             return result;

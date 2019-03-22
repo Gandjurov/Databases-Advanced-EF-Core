@@ -40,7 +40,7 @@ namespace MyApp.Core.Commands
                 sb.AppendLine($"- {employeeDto.FirstName}{employeeDto.LastName} - ${employeeDto.Salary:F2}");
             }
 
-            return sb.ToString().Trim();
+            return sb.ToString().TrimEnd();
         }
     }
 }

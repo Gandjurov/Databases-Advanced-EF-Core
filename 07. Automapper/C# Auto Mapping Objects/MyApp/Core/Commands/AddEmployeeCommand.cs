@@ -22,6 +22,7 @@ namespace MyApp.Core.Commands
 
         public string Execute(string[] inputArgs)
         {
+            //this.context.Database.EnsureDeleted();
             //this.context.Database.EnsureCreated();
 
             string firstName = inputArgs[0];
@@ -37,12 +38,12 @@ namespace MyApp.Core.Commands
                 Salary = salary
             };
 
-            this.context.Employees.Add(employee);
+            this.context.Add(employee);
             this.context.SaveChanges();
 
             var employeeDto = this.mapper.CreateMappedObject<EmployeeDto>(employee);
 
-            string result = $"Registerd succsesfully: {employeeDto.FirstName} {employeeDto.LastName} - {employeeDto.Salary}!";
+            string result = $"Registered succsesfully: {employeeDto.FirstName} {employeeDto.LastName} - {employeeDto.Salary}!";
 
             return result;
         }

@@ -5,6 +5,8 @@
 
     public class MyAppContext : DbContext
     {
+        public MyAppContext() { }
+
         public MyAppContext(DbContextOptions options) 
             : base(options)
         {

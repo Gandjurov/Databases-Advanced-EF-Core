@@ -34,6 +34,7 @@
                     var sourceValue = sourceProp.GetMethod.Invoke(source, new object[0]);
                     if(sourceValue == null)
                     {
+                        //continue;
                         throw new ArgumentException(ExceptionUtils.NullableSourceValueGetMethod);
                     }
                     if (ReflectionUtils.IsPrimitive(sourceValue.GetType()))
