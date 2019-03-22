@@ -94,5 +94,29 @@ namespace CustomAutoMapper
 
             return dest;
         }
+
+        private object CreateMappedObject(object source, Type ret)
+        {
+            if (source == null || ret == null)
+            {
+                throw new ArgumentException("The source or the return type is null");
+            }
+
+            var dest = Activator.CreateInstance(ret);
+
+            return DoMapping(source, ret);
+        }
+
+        private TDest CreateMappedObject<TDest>(object source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentException("The source provided is null");
+            }
+
+            var dest = Activator.CreateInstance(typeof(TDest));
+
+            return (TDest)DoMapping(source, dest);
+        }
     }
 }
