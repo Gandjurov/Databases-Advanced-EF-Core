@@ -22,7 +22,7 @@
 
             //Employees
             this.CreateMap<Position, RegisterEmployeeViewModel>()
-                .ForMember(x => x.PositionId, y => y.MapFrom(p => p.Id));
+                .ForMember(x => x.PositionName, y => y.MapFrom(p => p.Name));
 
             this.CreateMap<RegisterEmployeeInputModel, Employee>();
 

@@ -41,6 +41,8 @@
             }
 
             var employee = this.mapper.Map<Employee>(model);
+            var position = this.context.Positions.FirstOrDefault(x => x.Name == model.PositionName);
+            employee.PositionId = position.Id;
 
             this.context.Employees.Add(employee);
             this.context.SaveChanges();

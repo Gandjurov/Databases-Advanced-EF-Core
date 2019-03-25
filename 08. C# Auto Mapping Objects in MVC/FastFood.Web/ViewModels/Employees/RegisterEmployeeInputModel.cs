@@ -11,7 +11,7 @@ namespace FastFood.Web.ViewModels.Employees
         [Range(16, 65)]
         public int Age { get; set; }
 
-        public int PositionId { get; set; }
+        public string PositionName { get; set; }
 
         [Required]
         [MinLength(3), MaxLength(30)]
