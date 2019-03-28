@@ -14,13 +14,10 @@
         {
             var context = new ProductShopContext();
 
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-
             var usersJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\users.json");
+            var productsJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\products.json");
 
-            var result = ImportUsers(context, usersJson);
-            Console.WriteLine(result);
+            Console.WriteLine(ImportProducts(context, productsJson));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -34,6 +31,18 @@
 
             return $"Successfully imported {users.Count}";
 
+        }
+
+        public static string ImportProducts(ProductShopContext context, string inputJson)
+        {
+            var products = JsonConvert.DeserializeObject<List<Product>>(inputJson)
+                                      .Where(p => !string.IsNullOrEmpty(p.Name) && p.Name.Length >= 3)
+                                      .ToList();
+
+            context.Products.AddRange(products);
+            context.SaveChanges();
+
+            return $"Successfully imported {products.Count}";
         }
     }
 }
