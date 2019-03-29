@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using ProductShop.Data;
+    using ProductShop.Dtos.Export;
     using ProductShop.Models;
     using System;
     using System.Collections.Generic;
@@ -22,7 +23,9 @@
             //Console.WriteLine(ImportUsers(context, usersJson));
             //Console.WriteLine(ImportProducts(context, productsJson));
             //Console.WriteLine(ImportCategories(context, categoriesJson));
-            Console.WriteLine(ImportCategories(context, categoryProductsJson));
+            //Console.WriteLine(ImportCategories(context, categoryProductsJson));
+
+            Console.WriteLine(GetProductsInRange(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -72,6 +75,24 @@
 
             return $"Successfully imported {categoryProducts.Count}";
 
+        }
+
+        public static string GetProductsInRange(ProductShopContext context)
+        {
+            var productsInRange = context.Products
+                   .Where(p => p.Price >= 500 && p.Price <= 1000)
+                   .Select(p => new ProductDto
+                   {
+                       Name = p.Name,
+                       Price = p.Price,
+                       Seller = $"{p.Seller.FirstName} {p.Seller.LastName}"
+                   })
+                   .OrderBy(p => p.Price)
+                   .ToList();
+
+            var json = JsonConvert.SerializeObject(productsInRange, Formatting.Indented);
+
+            return json;
         }
     }
 }
