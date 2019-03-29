@@ -1,6 +1,7 @@
 ﻿namespace ProductShop
 {
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
     using ProductShop.Data;
     using ProductShop.Dtos.Export;
     using ProductShop.Models;
@@ -25,7 +26,8 @@
             //Console.WriteLine(ImportCategories(context, categoriesJson));
             //Console.WriteLine(ImportCategories(context, categoryProductsJson));
 
-            Console.WriteLine(GetProductsInRange(context));
+            //Console.WriteLine(GetProductsInRange(context));
+            Console.WriteLine(GetSoldProducts(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -56,7 +58,7 @@
         public static string ImportCategories(ProductShopContext context, string inputJson)
         {
             var categories = JsonConvert.DeserializeObject<List<Category>>(inputJson)
-                          .Where(c => !string.IsNullOrEmpty(c.Name) && c.Name.Length >= 3)
+                          .Where(c => !string.IsNullOrEmpty(c.Name) && c.Name.Length >= 3 && c.Name.Length <= 15)
                           .ToList();
 
             context.Categories.AddRange(categories);
@@ -70,7 +72,28 @@
             var categoryProducts = JsonConvert.DeserializeObject<List<CategoryProduct>>(inputJson)
                                               .ToList();
 
-            context.CategoryProducts.AddRange(categoryProducts);
+            var validCategoryIds = context.Categories
+                                          .Select(c => c.Id)
+                                          .ToHashSet();
+
+            var validProductIds = context.Products
+                                          .Select(p => p.Id)
+                                          .ToHashSet();
+
+            var validEntites = new List<CategoryProduct>();
+
+            foreach (var categoryProduct in categoryProducts)
+            {
+                bool isValid = validCategoryIds.Contains(categoryProduct.CategoryId) &&
+                               validProductIds.Contains(categoryProduct.ProductId);
+
+                if (isValid)
+                {
+                    validEntites.Add(categoryProduct);
+                }
+            }
+
+            context.CategoryProducts.AddRange(validEntites);
             context.SaveChanges();
 
             return $"Successfully imported {categoryProducts.Count}";
@@ -93,6 +116,45 @@
             var json = JsonConvert.SerializeObject(productsInRange, Formatting.Indented);
 
             return json;
+        }
+
+        public static string GetSoldProducts(ProductShopContext context)
+        {
+            var filteredUsers = context.Users
+                   .Where(u => u.ProductsSold.Any(ps => ps.Buyer != null))
+                   .OrderBy(u => u.LastName)
+                   .ThenBy(u => u.FirstName)
+                   .Select(u => new
+                   {
+                       FirstName = u.FirstName,
+                       LastName = u.LastName,
+                       SoldProducts = u.ProductsSold
+                            .Where(ps => ps.Buyer != null)
+                            .Select(ps => new
+                            {
+                                Name = ps.Name,
+                                Price = ps.Price,
+                                BuyerFirstName = ps.Buyer.FirstName,
+                                BuyerLastName = ps.Buyer.LastName
+                            }).ToList()
+                   })
+                   .ToList();
+
+            DefaultContractResolver contractResolver = new DefaultContractResolver()
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var json = JsonConvert.SerializeObject(
+                filteredUsers,
+                new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ContractResolver = contractResolver
+                });
+
+            return json;
+
         }
     }
 }
