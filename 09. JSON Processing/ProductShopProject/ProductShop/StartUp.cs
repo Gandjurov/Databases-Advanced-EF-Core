@@ -27,7 +27,8 @@
             //Console.WriteLine(ImportCategories(context, categoryProductsJson));
 
             //Console.WriteLine(GetProductsInRange(context));
-            Console.WriteLine(GetSoldProducts(context));
+            //Console.WriteLine(GetSoldProducts(context));
+            Console.WriteLine(GetUsersWithProducts(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -155,6 +156,55 @@
 
             return json;
 
+        }
+
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var filteredUsers = context.Users
+                                       .Where(u => u.ProductsSold.Any(ps => ps.Buyer != null))
+                                       .OrderByDescending(u => u.ProductsSold.Count(ps => ps.Buyer != null))
+                                       .Select(u => new
+                                       {
+                                           FirstName = u.FirstName,
+                                           LastName = u.LastName,
+                                           Age = u.Age,
+                                           SoldProducts = new
+                                           {
+                                               Count = u.ProductsSold
+                                                        .Count(ps => ps.Buyer != null),
+                                               Products = u.ProductsSold
+                                                           .Where(ps => ps.Buyer != null)
+                                                           .Select(ps => new
+                                                           {
+                                                               Name = ps.Name,
+                                                               Price = ps.Price
+                                                           })
+                                                           .ToList()
+                                           }
+                                       })
+                                       .ToList();
+
+            var result = new
+            {
+                UsersCount = filteredUsers.Count,
+                Users = filteredUsers
+            };
+
+            DefaultContractResolver contractResolver = new DefaultContractResolver()
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var json = JsonConvert.SerializeObject(
+                result,
+                new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ContractResolver = contractResolver,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+            return json;
         }
     }
 }
