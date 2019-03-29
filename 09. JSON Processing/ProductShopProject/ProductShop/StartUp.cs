@@ -16,8 +16,11 @@
 
             var usersJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\users.json");
             var productsJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\products.json");
+            var categoriesJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\categories.json");
 
-            Console.WriteLine(ImportProducts(context, productsJson));
+            //Console.WriteLine(ImportUsers(context, usersJson));
+            //Console.WriteLine(ImportProducts(context, productsJson));
+            Console.WriteLine(ImportCategories(context, categoriesJson));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -43,6 +46,18 @@
             context.SaveChanges();
 
             return $"Successfully imported {products.Count}";
+        }
+
+        public static string ImportCategories(ProductShopContext context, string inputJson)
+        {
+            var categories = JsonConvert.DeserializeObject<List<Category>>(inputJson)
+                          .Where(c => !string.IsNullOrEmpty(c.Name) && c.Name.Length >= 3)
+                          .ToList();
+
+            context.Categories.AddRange(categories);
+            context.SaveChanges();
+
+            return $"Successfully imported {categories.Count}";
         }
     }
 }
