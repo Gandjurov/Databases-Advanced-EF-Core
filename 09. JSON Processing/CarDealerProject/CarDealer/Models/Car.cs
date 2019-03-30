@@ -7,6 +7,11 @@ namespace CarDealer.Models
 {
     public class Car
     {
+        public Car()
+        {
+            this.PartCars = new List<PartCar>();
+        }
+
         public int Id { get; set; }
 
         public string Make { get; set; }
@@ -17,6 +22,6 @@ namespace CarDealer.Models
 
         public ICollection<Sale> Sales { get; set; }
 
-        public ICollection<PartCar> PartCars { get; set; } = new List<PartCar>();
+        public ICollection<PartCar> PartCars { get; set; }
     }
 }
