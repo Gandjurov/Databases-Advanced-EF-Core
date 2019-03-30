@@ -31,7 +31,9 @@ namespace CarDealer
             //Console.WriteLine(ImportParts(context, partsJson));
             //Console.WriteLine(ImportCars(context, carsJson));
             //Console.WriteLine(ImportCustomers(context, customersJson));
-            Console.WriteLine(ImportSales(context, salesJson));
+            //Console.WriteLine(ImportSales(context, salesJson));
+
+            Console.WriteLine(GetOrderedCustomers(context));
         }
 
         public static string ImportSuppliers(CarDealerContext context, string inputJson)
@@ -134,6 +136,28 @@ namespace CarDealer
             context.SaveChanges();
 
             return $"Successfully imported {sales.Count}.";
+        }
+
+        public static string GetOrderedCustomers(CarDealerContext context)
+        {
+            var customers = context.Customers
+                                   .OrderBy(c => c.BirthDate)
+                                   .ThenBy(c => c.IsYoungDriver)
+                                   .ToList();
+
+            string json = JsonConvert.SerializeObject(customers, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+
+                DateFormatString = "dd/MM/yyyy",
+                Formatting = Formatting.Indented,
+                //ContractResolver = new DefaultContractResolver()
+                //{
+                //    NamingStrategy = new CamelCaseNamingStrategy()
+                //}
+            });
+
+            return json;
         }
     }
 }
