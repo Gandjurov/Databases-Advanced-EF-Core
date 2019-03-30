@@ -6,6 +6,7 @@ using AutoMapper;
 using CarDealer.Data;
 using CarDealer.DTO.Import;
 using CarDealer.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 
@@ -35,7 +36,8 @@ namespace CarDealer
 
             //Console.WriteLine(GetOrderedCustomers(context));
             //Console.WriteLine(GetCarsFromMakeToyota(context));
-            Console.WriteLine(GetLocalSuppliers(context));
+            //Console.WriteLine(GetLocalSuppliers(context));
+            Console.WriteLine(GetCarsWithTheirListOfParts(context));
         }
 
         public static string ImportSuppliers(CarDealerContext context, string inputJson)
@@ -197,6 +199,40 @@ namespace CarDealer
                                    .ToList();
 
             var json = JsonConvert.SerializeObject(suppliers, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented
+            });
+
+            return json;
+        }
+
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            var cars = context.Cars
+                              .Include(c => c.PartCars)
+                              .ThenInclude(c => c.Part)
+                              .Select(c => new
+                              {
+                                  car = new
+                                  {
+                                      Make = c.Make,
+                                      Model = c.Model,
+                                      TravelledDistance = c.TravelledDistance
+                                  },
+
+                                  parts = c.PartCars
+                                           .Select(p => new
+                                           {
+                                               Name = p.Part.Name,
+                                               Price = $"{p.Part.Price:F2}"
+                                           })
+                                           .ToList()
+                                    
+                              })
+                              .ToList();
+
+            var json = JsonConvert.SerializeObject(cars, new JsonSerializerSettings()
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 Formatting = Formatting.Indented
