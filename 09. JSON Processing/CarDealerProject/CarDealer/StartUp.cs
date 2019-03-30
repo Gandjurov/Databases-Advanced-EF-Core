@@ -39,7 +39,8 @@ namespace CarDealer
             //Console.WriteLine(GetCarsFromMakeToyota(context));
             //Console.WriteLine(GetLocalSuppliers(context));
             //Console.WriteLine(GetCarsWithTheirListOfParts(context));
-            Console.WriteLine(GetTotalSalesByCustomer(context));
+            //Console.WriteLine(GetTotalSalesByCustomer(context));
+            Console.WriteLine(GetSalesWithAppliedDiscount(context));
         }
 
         public static string ImportSuppliers(CarDealerContext context, string inputJson)
@@ -270,6 +271,40 @@ namespace CarDealer
                 {
                     NamingStrategy = new CamelCaseNamingStrategy()
                 }
+            });
+
+            return json;
+        }
+
+        public static string GetSalesWithAppliedDiscount(CarDealerContext context)
+        {
+            var sales = context.Sales
+                               .Take(10)
+                               .Select(x => new
+                               {
+                                   car = new
+                                   {
+                                       Make = x.Car.Make,
+                                       Model = x.Car.Model,
+                                       TravelledDistance = x.Car.TravelledDistance
+                                   },
+
+                                   customerName = x.Customer.Name,
+                                   Discount = $"{x.Discount:F2}",
+                                   price = $"{x.Car.PartCars.Sum(y => y.Part.Price):F2}",
+                                   priceWithDiscount = $"{x.Car.PartCars.Sum(y => y.Part.Price) - (x.Car.PartCars.Sum(y => y.Part.Price) * (x.Discount / 100)):F2}"
+                               })
+                               .ToList();
+
+
+            var json = JsonConvert.SerializeObject(sales, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented,
+                //ContractResolver = new DefaultContractResolver()
+                //{
+                //    NamingStrategy = new CamelCaseNamingStrategy()
+                //}
             });
 
             return json;
