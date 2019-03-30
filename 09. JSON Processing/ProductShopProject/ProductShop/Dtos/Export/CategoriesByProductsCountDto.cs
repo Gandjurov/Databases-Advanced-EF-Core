@@ -7,16 +7,16 @@ namespace ProductShop.Dtos.Export
 {
     public class CategoriesByProductsCountDto
     {
-        [JsonProperty("category")]
+        [JsonProperty(PropertyName = "category")]
         public string Name { get; set; }
 
-        [JsonProperty("productsCount")]
+        [JsonProperty(PropertyName = "productsCount")]
         public int ProductsCount { get; set; }
 
-        [JsonProperty("averagePrice")]
+        [JsonProperty(PropertyName = "averagePrice")]
         public decimal AveragePrice { get; set; }
 
-        [JsonProperty("totalRevenue")]
+        [JsonProperty(PropertyName = "totalRevenue")]
         public decimal TotalPriceSum { get; set; }
     }
 }

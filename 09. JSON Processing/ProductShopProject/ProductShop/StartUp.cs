@@ -15,14 +15,12 @@
         public static void Main()
         {
             var context = new ProductShopContext();
+            
 
-            //context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
-
-            var usersJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\users.json");
-            var productsJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\products.json");
-            var categoriesJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\categories.json");
-            var categoryProductsJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\categories-products.json");
+            var usersJson = File.ReadAllText(@"..\..\..\Datasets\users.json");
+            var productsJson = File.ReadAllText(@"..\..\..\Datasets\products.json");
+            var categoriesJson = File.ReadAllText(@"D..\..\..\Datasets\categories.json");
+            var categoryProductsJson = File.ReadAllText(@"..\..\..\Datasets\categories-products.json");
 
             //Console.WriteLine(ImportUsers(context, usersJson));
             //Console.WriteLine(ImportProducts(context, productsJson));
@@ -31,8 +29,8 @@
 
             //Console.WriteLine(GetProductsInRange(context));
             //Console.WriteLine(GetSoldProducts(context));
-            Console.WriteLine(GetCategoriesByProductsCount(context));
-            //Console.WriteLine(GetUsersWithProducts(context));
+            //Console.WriteLine(GetCategoriesByProductsCount(context));
+            Console.WriteLine(GetUsersWithProducts(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -178,7 +176,19 @@
                                     })
                                     .ToList();
 
-            var json = JsonConvert.SerializeObject(categories, Formatting.Indented);
+            DefaultContractResolver contractResolver = new DefaultContractResolver()
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var json = JsonConvert.SerializeObject(
+                categories,
+                new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    ContractResolver = contractResolver,
+                    NullValueHandling = NullValueHandling.Ignore
+                });
 
             return json;
         }
