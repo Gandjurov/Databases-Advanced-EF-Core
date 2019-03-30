@@ -29,8 +29,8 @@
 
             //Console.WriteLine(GetProductsInRange(context));
             //Console.WriteLine(GetSoldProducts(context));
-            //Console.WriteLine(GetCategoriesByProductsCount(context));
-            Console.WriteLine(GetUsersWithProducts(context));
+            Console.WriteLine(GetCategoriesByProductsCount(context));
+            //Console.WriteLine(GetUsersWithProducts(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -162,33 +162,27 @@
         public static string GetCategoriesByProductsCount(ProductShopContext context)
         {
             var categories = context.Categories
-                                    .OrderBy(c => c.CategoryProducts.Count)
-                                    .Select(c => new CategoriesByProductsCountDto()
-                                    {
-                                        Name = c.Name,
-                                        ProductsCount = c.CategoryProducts.Count,
-                                        AveragePrice = c.CategoryProducts
-                                                        .Select(cp => cp.Product.Price)
-                                                        .Average(),
-                                        TotalPriceSum = c.CategoryProducts
-                                                         .Select(cp => cp.Product.Price)
-                                                         .Sum()
-                                    })
-                                    .ToList();
-
-            DefaultContractResolver contractResolver = new DefaultContractResolver()
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-
-            var json = JsonConvert.SerializeObject(
-                categories,
-                new JsonSerializerSettings
+                .OrderByDescending(c => c.CategoryProducts.Count)
+                .Select(x => new
                 {
-                    Formatting = Formatting.Indented,
-                    ContractResolver = contractResolver,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
+                    Category = x.Name,
+                    ProductsCount = x.CategoryProducts.Count,
+                    AveragePrice = $"{x.CategoryProducts.Average(c => c.Product.Price):F2}",
+                    TotalRevenue = $"{x.CategoryProducts.Sum(c => c.Product.Price)}"
+                })
+                .ToList();
+
+            string json = JsonConvert.SerializeObject(categories,
+                new JsonSerializerSettings()
+                {
+                    ContractResolver = new DefaultContractResolver()
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy(),
+                    },
+
+                    Formatting = Formatting.Indented
+                }
+            );
 
             return json;
         }
