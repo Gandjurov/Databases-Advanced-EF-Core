@@ -37,6 +37,14 @@
             modelBuilder.Entity<CategoryProduct>(entity =>
             {
                 entity.HasKey(x => new { x.CategoryId, x.ProductId});
+
+                entity.HasOne(e => e.Category)
+                      .WithMany(c => c.CategoryProducts)
+                      .HasForeignKey(e => e.CategoryId);
+
+                entity.HasOne(e => e.Product)
+                      .WithMany(p => p.CategoryProducts)
+                      .HasForeignKey(e => e.ProductId);
             });
 
             modelBuilder.Entity<User>(entity =>

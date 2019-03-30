@@ -16,6 +16,9 @@
         {
             var context = new ProductShopContext();
 
+            //context.Database.EnsureDeleted();
+            //context.Database.EnsureCreated();
+
             var usersJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\users.json");
             var productsJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\products.json");
             var categoriesJson = File.ReadAllText(@"D:\SoftwareUniversity\#GitRepositories\Databases-Advanced-EF-Core\09. JSON Processing\ProductShopProject\ProductShop\Datasets\categories.json");
@@ -28,7 +31,8 @@
 
             //Console.WriteLine(GetProductsInRange(context));
             //Console.WriteLine(GetSoldProducts(context));
-            Console.WriteLine(GetUsersWithProducts(context));
+            Console.WriteLine(GetCategoriesByProductsCount(context));
+            //Console.WriteLine(GetUsersWithProducts(context));
         }
 
         public static string ImportUsers(ProductShopContext context, string inputJson)
@@ -70,8 +74,7 @@
 
         public static string ImportCategoryProducts(ProductShopContext context, string inputJson)
         {
-            var categoryProducts = JsonConvert.DeserializeObject<List<CategoryProduct>>(inputJson)
-                                              .ToList();
+            var categoryProducts = JsonConvert.DeserializeObject<List<CategoryProduct>>(inputJson);
 
             var validCategoryIds = context.Categories
                                           .Select(c => c.Id)
@@ -156,6 +159,28 @@
 
             return json;
 
+        }
+
+        public static string GetCategoriesByProductsCount(ProductShopContext context)
+        {
+            var categories = context.Categories
+                                    .OrderBy(c => c.CategoryProducts.Count)
+                                    .Select(c => new CategoriesByProductsCountDto()
+                                    {
+                                        Name = c.Name,
+                                        ProductsCount = c.CategoryProducts.Count,
+                                        AveragePrice = c.CategoryProducts
+                                                        .Select(cp => cp.Product.Price)
+                                                        .Average(),
+                                        TotalPriceSum = c.CategoryProducts
+                                                         .Select(cp => cp.Product.Price)
+                                                         .Sum()
+                                    })
+                                    .ToList();
+
+            var json = JsonConvert.SerializeObject(categories, Formatting.Indented);
+
+            return json;
         }
 
         public static string GetUsersWithProducts(ProductShopContext context)
