@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace CarDealer.Models
 
         public ICollection<Sale> Sales { get; set; }
 
+        [JsonIgnore]
         public ICollection<PartCar> PartCars { get; set; }
     }
 }

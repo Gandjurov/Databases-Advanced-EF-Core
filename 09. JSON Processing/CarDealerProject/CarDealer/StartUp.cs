@@ -33,7 +33,8 @@ namespace CarDealer
             //Console.WriteLine(ImportCustomers(context, customersJson));
             //Console.WriteLine(ImportSales(context, salesJson));
 
-            Console.WriteLine(GetOrderedCustomers(context));
+            //Console.WriteLine(GetOrderedCustomers(context));
+            Console.WriteLine(GetCarsFromMakeToyota(context));
         }
 
         public static string ImportSuppliers(CarDealerContext context, string inputJson)
@@ -150,6 +151,28 @@ namespace CarDealer
                 NullValueHandling = NullValueHandling.Ignore,
 
                 DateFormatString = "dd/MM/yyyy",
+                Formatting = Formatting.Indented,
+                //ContractResolver = new DefaultContractResolver()
+                //{
+                //    NamingStrategy = new CamelCaseNamingStrategy()
+                //}
+            });
+
+            return json;
+        }
+
+        public static string GetCarsFromMakeToyota(CarDealerContext context)
+        {
+            var cars = context.Cars
+                              .Where(c => string.Compare(c.Make, "Toyota", true) == 0)
+                              .OrderBy(c => c.Model)
+                              .ThenByDescending(c => c.TravelledDistance)
+                              .ToList();
+
+            string json = JsonConvert.SerializeObject(cars, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                
                 Formatting = Formatting.Indented,
                 //ContractResolver = new DefaultContractResolver()
                 //{
