@@ -19,15 +19,19 @@ namespace ProductShop
             });
 
             var usersXml = File.ReadAllText("../../../Datasets/users.xml");
+            var productsXml = File.ReadAllText("../../../Datasets/Products.xml");
 
             using (ProductShopContext context = new ProductShopContext())
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                //context.Database.EnsureCreated();
 
-                var usersResult = ImportUsers(context, usersXml);
+                //01. Import Users 
+                //var usersResult = ImportUsers(context, usersXml);
+                var productsResult = ImportProducts(context, productsXml);
 
-                Console.WriteLine(usersResult);
+                //Console.WriteLine(usersResult);
+                Console.WriteLine(productsResult);
             }
         }
 
@@ -49,6 +53,33 @@ namespace ProductShop
             context.SaveChanges();
 
             return $"Successfully imported {users.Count}";
+        }
+
+        public static string ImportProducts(ProductShopContext context, string inputXml)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportProductDto[]), new XmlRootAttribute("Products"));
+
+            var productsDto = (ImportProductDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
+
+            var products = new List<Product>();
+
+            foreach (var productDto in productsDto)
+            {
+                var product = new Product
+                {
+                    Name = productDto.Name,
+                    Price = productDto.Price,
+                    SellerId = productDto.SellerId,
+                    BuyerId = productDto.BuyerId
+                };
+
+                products.Add(product);
+            }
+
+            context.Products.AddRange(products);
+            context.SaveChanges();
+
+            return $"Successfully imported {products.Count}";
         }
     }
 }

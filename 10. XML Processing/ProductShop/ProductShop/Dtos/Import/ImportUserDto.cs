@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductShop.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
@@ -16,5 +17,6 @@ namespace ProductShop.Dtos.Import
 
         [XmlElement("age")]
         public int Age { get; set; }
+
     }
 }
