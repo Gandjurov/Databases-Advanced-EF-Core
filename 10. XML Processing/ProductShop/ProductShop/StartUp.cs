@@ -19,19 +19,21 @@ namespace ProductShop
             });
 
             var usersXml = File.ReadAllText("../../../Datasets/users.xml");
-            var productsXml = File.ReadAllText("../../../Datasets/Products.xml");
+            var productsXml = File.ReadAllText("../../../Datasets/products.xml");
+            var categoriesXml = File.ReadAllText("../../../Datasets/categories.xml");
 
             using (ProductShopContext context = new ProductShopContext())
             {
                 //context.Database.EnsureDeleted();
                 //context.Database.EnsureCreated();
 
-                //01. Import Users 
                 //var usersResult = ImportUsers(context, usersXml);
-                var productsResult = ImportProducts(context, productsXml);
+                //var productsResult = ImportProducts(context, productsXml);
+                var categoriesResult = ImportCategories(context, categoriesXml);
 
                 //Console.WriteLine(usersResult);
-                Console.WriteLine(productsResult);
+                //Console.WriteLine(productsResult);
+                Console.WriteLine(categoriesResult);
             }
         }
 
@@ -80,6 +82,30 @@ namespace ProductShop
             context.SaveChanges();
 
             return $"Successfully imported {products.Count}";
+        }
+
+        public static string ImportCategories(ProductShopContext context, string inputXml)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportCategoryDto[]), new XmlRootAttribute("Categories"));
+
+            var categoriesDto = (ImportCategoryDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
+
+            var categories = new List<Category>();
+
+            foreach (var categoryDto in categoriesDto)
+            {
+                var category = new Category
+                {
+                    Name = categoryDto.Name
+                };
+
+                categories.Add(category);
+            }
+
+            context.Categories.AddRange(categories);
+            context.SaveChanges();
+
+            return $"Successfully imported {categories.Count}";
         }
     }
 }
