@@ -21,6 +21,7 @@ namespace ProductShop
             var usersXml = File.ReadAllText("../../../Datasets/users.xml");
             var productsXml = File.ReadAllText("../../../Datasets/products.xml");
             var categoriesXml = File.ReadAllText("../../../Datasets/categories.xml");
+            var categoriesProductsXml = File.ReadAllText("../../../Datasets/categories-products.xml");
 
             using (ProductShopContext context = new ProductShopContext())
             {
@@ -29,11 +30,10 @@ namespace ProductShop
 
                 //var usersResult = ImportUsers(context, usersXml);
                 //var productsResult = ImportProducts(context, productsXml);
-                var categoriesResult = ImportCategories(context, categoriesXml);
+                //var categoriesResult = ImportCategories(context, categoriesXml);
+                var categoriesProductsResult = ImportCategoryProducts(context, categoriesProductsXml);
 
-                //Console.WriteLine(usersResult);
-                //Console.WriteLine(productsResult);
-                Console.WriteLine(categoriesResult);
+                Console.WriteLine(categoriesProductsResult);
             }
         }
 
@@ -107,5 +107,39 @@ namespace ProductShop
 
             return $"Successfully imported {categories.Count}";
         }
+
+        public static string ImportCategoryProducts(ProductShopContext context, string inputXml)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportCategoryProductDto[]), new XmlRootAttribute("CategoryProducts"));
+
+            var categoriesProductsDto = (ImportCategoryProductDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
+
+            var categoriesProducts = new List<CategoryProduct>();
+
+            foreach (var categoryProductDto in categoriesProductsDto)
+            {
+                var product = context.Products.Find(categoryProductDto.ProductId);
+                var category = context.Categories.Find(categoryProductDto.CategoryId);
+
+                if (product == null || category == null)
+                {
+                    continue;
+                }
+
+                var categoryProduct = new CategoryProduct
+                {
+                    ProductId = product.Id,
+                    CategoryId = category.Id
+                };
+                
+                categoriesProducts.Add(categoryProduct);
+            }
+
+            context.CategoryProducts.AddRange(categoriesProducts);
+            context.SaveChanges();
+
+            return $"Successfully imported {categoriesProducts.Count}";
+        }
+
     }
 }
