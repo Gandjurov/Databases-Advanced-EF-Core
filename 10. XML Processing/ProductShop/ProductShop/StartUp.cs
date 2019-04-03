@@ -17,7 +17,7 @@ namespace ProductShop
     {
         public static void Main()
         {
-            Mapper.Initialize(x => 
+            Mapper.Initialize(x =>
             {
                 x.AddProfile<ProductShopProfile>();
             });
@@ -41,9 +41,10 @@ namespace ProductShop
                 //Exports:
                 //var productsInRange = GetProductsInRange(context);
                 //var soldProducts = GetSoldProducts(context);
-                var categoriesByProductsCount = GetCategoriesByProductsCount(context);
+                //var categoriesByProductsCount = GetCategoriesByProductsCount(context);
+                var usersWithProducts = GetUsersWithProducts(context);
 
-                Console.WriteLine(categoriesByProductsCount);
+                Console.WriteLine(usersWithProducts);
             }
         }
 
@@ -141,7 +142,7 @@ namespace ProductShop
                     ProductId = product.Id,
                     CategoryId = category.Id
                 };
-                
+
                 categoriesProducts.Add(categoryProduct);
             }
 
@@ -237,6 +238,51 @@ namespace ProductShop
             });
 
             xmlSerializer.Serialize(new StringWriter(sb), categories, namespaces);
+
+            return sb.ToString().TrimEnd();
+        }
+
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var users = context.Users
+                               .Where(x => x.ProductsSold.Any())
+                               .OrderByDescending(x => x.ProductsSold.Count)
+                               .Select(x => new ExportUserAndProductDto
+                               {
+                                   FirstName = x.FirstName,
+                                   LastName = x.LastName,
+                                   Age = x.Age,
+                                   SoldProductDto = new SoldProductDto()
+                                   {
+                                       Count = x.ProductsSold.Count,
+                                       ProductDtos = x.ProductsSold.Select(p => new ProductDto()
+                                       {
+                                           Name = p.Name,
+                                           Price = p.Price
+                                       })
+                                       .OrderByDescending(n => n.Price)
+                                       .ToArray()
+                                   }
+                               })
+                               .Take(10)
+                               .ToArray();
+
+            var customExport = new ExportCustomUserProductsDto
+            {
+                Count = context.Users.Count(x => x.ProductsSold.Any()),
+                ExportUserAndProductDto = users
+            };
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportCustomUserProductsDto), new XmlRootAttribute("Users"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                new XmlQualifiedName("","")
+            });
+
+            xmlSerializer.Serialize(new StringWriter(sb), customExport, namespaces);
 
             return sb.ToString().TrimEnd();
         }
