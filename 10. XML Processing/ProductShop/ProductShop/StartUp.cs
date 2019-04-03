@@ -38,11 +38,12 @@ namespace ProductShop
                 //var categoriesResult = ImportCategories(context, categoriesXml);
                 //var categoriesProductsResult = ImportCategoryProducts(context, categoriesProductsXml);
 
-
+                //Exports:
                 //var productsInRange = GetProductsInRange(context);
-                var soldProducts = GetSoldProducts(context);
+                //var soldProducts = GetSoldProducts(context);
+                var categoriesByProductsCount = GetCategoriesByProductsCount(context);
 
-                Console.WriteLine(soldProducts);
+                Console.WriteLine(categoriesByProductsCount);
             }
         }
 
@@ -210,8 +211,34 @@ namespace ProductShop
             xmlSerializer.Serialize(new StringWriter(sb), users, namespaces);
 
             return sb.ToString().TrimEnd();
-
         }
 
+        public static string GetCategoriesByProductsCount(ProductShopContext context)
+        {
+            var categories = context.Categories
+                                    .OrderByDescending(c => c.CategoryProducts.Count)
+                                    .ThenBy(x => x.CategoryProducts.Sum(c => c.Product.Price))
+                                    .Select(x => new ExportCategoriesByProductsDto
+                                    {
+                                        Name = x.Name,
+                                        Count = x.CategoryProducts.Count,
+                                        AveragePrice = x.CategoryProducts.Average(c => c.Product.Price),
+                                        TotalRevenue = x.CategoryProducts.Sum(c => c.Product.Price)
+                                    })
+                                    .ToArray();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportCategoriesByProductsDto[]), new XmlRootAttribute("Categories"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                new XmlQualifiedName("","")
+            });
+
+            xmlSerializer.Serialize(new StringWriter(sb), categories, namespaces);
+
+            return sb.ToString().TrimEnd();
+        }
     }
 }
