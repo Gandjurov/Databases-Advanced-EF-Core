@@ -32,13 +32,17 @@ namespace ProductShop
                 //context.Database.EnsureDeleted();
                 //context.Database.EnsureCreated();
 
+                //Imports:
                 //var usersResult = ImportUsers(context, usersXml);
                 //var productsResult = ImportProducts(context, productsXml);
                 //var categoriesResult = ImportCategories(context, categoriesXml);
                 //var categoriesProductsResult = ImportCategoryProducts(context, categoriesProductsXml);
 
-                var productsInRange = GetProductsInRange(context);
-                Console.WriteLine(productsInRange);
+
+                //var productsInRange = GetProductsInRange(context);
+                var soldProducts = GetSoldProducts(context);
+
+                Console.WriteLine(soldProducts);
             }
         }
 
@@ -172,6 +176,41 @@ namespace ProductShop
             xmlSerializer.Serialize(new StringWriter(sb), products, namespaces);
 
             return sb.ToString().TrimEnd();
+        }
+
+        public static string GetSoldProducts(ProductShopContext context)
+        {
+            var users = context.Users
+                               .Where(p => p.ProductsSold.Any())
+                               .Select(x => new ExportUserSoldProductDto
+                               {
+                                   FirstName = x.FirstName,
+                                   LastName = x.LastName,
+                                   ProductDto = x.ProductsSold.Select(p => new ProductDto
+                                   {
+                                       Name = p.Name,
+                                       Price = p.Price
+                                   })
+                                   .ToArray()
+                               })
+                               .OrderBy(l => l.LastName)
+                               .ThenBy(f => f.FirstName)
+                               .Take(5)
+                               .ToArray();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportUserSoldProductDto[]), new XmlRootAttribute("Users"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                new XmlQualifiedName("","")
+            });
+
+            xmlSerializer.Serialize(new StringWriter(sb), users, namespaces);
+
+            return sb.ToString().TrimEnd();
+
         }
 
     }
