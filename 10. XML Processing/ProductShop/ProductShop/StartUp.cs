@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using ProductShop.Data;
+using ProductShop.Dtos.Export;
 using ProductShop.Dtos.Import;
 using ProductShop.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace ProductShop
@@ -31,9 +35,10 @@ namespace ProductShop
                 //var usersResult = ImportUsers(context, usersXml);
                 //var productsResult = ImportProducts(context, productsXml);
                 //var categoriesResult = ImportCategories(context, categoriesXml);
-                var categoriesProductsResult = ImportCategoryProducts(context, categoriesProductsXml);
+                //var categoriesProductsResult = ImportCategoryProducts(context, categoriesProductsXml);
 
-                Console.WriteLine(categoriesProductsResult);
+                var productsInRange = GetProductsInRange(context);
+                Console.WriteLine(productsInRange);
             }
         }
 
@@ -139,6 +144,34 @@ namespace ProductShop
             context.SaveChanges();
 
             return $"Successfully imported {categoriesProducts.Count}";
+        }
+
+        public static string GetProductsInRange(ProductShopContext context)
+        {
+            var products = context.Products
+                                  .Where(x => x.Price >= 500 && x.Price <= 1000)
+                                  .Select(x => new ExportProductInRangeDto
+                                  {
+                                      Name = x.Name,
+                                      Price = x.Price,
+                                      Buyer = x.Buyer.FirstName + " " + x.Buyer.LastName
+                                  })
+                                  .OrderBy(x => x.Price)
+                                  .Take(10)
+                                  .ToArray();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportProductInRangeDto[]), new XmlRootAttribute("Products"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                new XmlQualifiedName("","")
+            });
+
+            xmlSerializer.Serialize(new StringWriter(sb), products, namespaces);
+
+            return sb.ToString().TrimEnd();
         }
 
     }
