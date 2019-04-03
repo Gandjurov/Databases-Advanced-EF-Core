@@ -5,6 +5,7 @@ using CarDealer.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace CarDealer
@@ -26,16 +27,17 @@ namespace CarDealer
 
             using (CarDealerContext context = new CarDealerContext())
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                //context.Database.EnsureCreated();
 
                 //Imports:
-                var importSuppliers = ImportSuppliers(context, suppliersXml);
-
+                //var importSuppliers = ImportSuppliers(context, suppliersXml);
+                var importParts = ImportParts(context, partsXml);
 
                 //Exports:
 
-                Console.WriteLine(importSuppliers);
+
+                Console.WriteLine(importParts);
             }
         }
 
@@ -62,6 +64,41 @@ namespace CarDealer
             context.SaveChanges();
 
             return $"Successfully imported {suppliers.Count}";
+        }
+
+        public static string ImportParts(CarDealerContext context, string inputXml)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportPartsDto[]), new XmlRootAttribute("Parts"));
+
+            var partsDto = (ImportPartsDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
+
+            var parts = new List<Part>();
+            var supplierIds = context.Suppliers
+                                     .Select(x => x.Id)
+                                     .ToList();
+
+            foreach (var partDto in partsDto)
+            {
+                var part = new Part
+                {
+                    Name = partDto.Name,
+                    Price = partDto.Price,
+                    Quantity = partDto.Quantity,
+                    SupplierId = partDto.SupplierId
+                };
+
+                if (supplierIds.Contains(part.SupplierId) == false)
+                {
+                    continue;
+                }
+
+                parts.Add(part);
+            };
+
+            context.Parts.AddRange(parts);
+            context.SaveChanges();
+
+            return $"Successfully imported {parts.Count}";
         }
     }
 }
