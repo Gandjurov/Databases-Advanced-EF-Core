@@ -33,12 +33,15 @@ namespace CarDealer
                 //Imports:
                 //var importSuppliers = ImportSuppliers(context, suppliersXml);
                 //var importParts = ImportParts(context, partsXml);
-                //var importCars = ImportCars(context, carsXml);
-                var importCustomers = ImportCustomers(context, customersXml);
+                var importCars = ImportCars(context, carsXml);
+                //var importCustomers = ImportCustomers(context, customersXml);
+                //var importSales = ImportSales(context, salesXml);
+
+
                 //Exports:
 
 
-                Console.WriteLine(importCustomers);
+                Console.WriteLine(importCars);
             }
         }
 
@@ -108,91 +111,52 @@ namespace CarDealer
 
             var carsDto = (ImportCarsDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
 
-            var mappedCars = new List<Car>();
+            var cars = new List<Car>();
 
-            foreach (var carDto in carsDto)
+            var existingPartsIds = context.Parts
+                                          .Select(x => x.Id)
+                                          .Distinct()
+                                          .ToArray();
+
+            foreach (var car in carsDto)
             {
-                var vehicle = new Car
+                Car currentCar = new Car()
                 {
-                    Make = carDto.Make,
-                    Model = carDto.Model,
-                    TraveledDistance = carDto.TraveledDistance
+                    Make = car.Make,
+                    Model = car.Model,
+                    TraveledDistance = car.TraveledDistance
+                    
                 };
 
-                mappedCars.Add(vehicle);
+                var partIds = new HashSet<int>();
 
-                var partIds = carDto.Parts
-                                 .Distinct()
-                                 .ToList();
-
-                if (partIds == null)
+                foreach (var id in car.Parts)
                 {
-                    continue;
+                    var pid = id.Id;
+                    partIds.Add(pid);
                 }
 
-                partIds.ForEach(pid =>
+                foreach (var pid in partIds)
                 {
-                    var currentPair = new PartCar()
+                    if (existingPartsIds.Contains(pid) == false)
+                        continue;
+
+                    PartCar currentPair = new PartCar()
                     {
-                        Car = vehicle,
-                        PartId = pid.partId
+                        Car = currentCar,
+                        PartId = pid
                     };
 
-                    vehicle.PartCars.Add(currentPair);
-                });
+                    currentCar.PartCars.Add(currentPair);
+                }
 
-
+                cars.Add(currentCar);
             }
 
-            context.Cars.AddRange(mappedCars);
+            context.Cars.AddRange(cars);
             context.SaveChanges();
-            int affectedRows = context.Cars.Count();
 
-            return $"Successfully imported {affectedRows}.";
-
-
-            //var cars = new List<Car>();
-            //var partIds = new HashSet<Car>();
-            //var existingPartsIds = context.Parts
-            //                              .Select(x => x.Id)
-            //                              .ToArray();
-
-            //foreach (var carDto in carsDto)
-            //{
-            //    var car = new Car
-            //    {
-            //        Make = carDto.Make,
-            //        Model = carDto.Model,
-            //        TraveledDistance = carDto.TraveledDistance
-            //    };
-
-            //    foreach (var part in carDto.Parts)
-            //    {
-            //        var pid = part.partId;
-
-            //        if (existingPartsIds.Contains(pid) == false)
-            //        {
-            //            continue;
-            //        }
-
-            //        PartCar currentPair = new PartCar()
-            //        {
-            //            Car = car,
-            //            PartId = pid
-            //        };
-
-            //        car.PartCars.Add(currentPair);
-
-
-            //    }
-
-            //    cars.Add(car);
-            //}
-
-            //context.Cars.AddRange(cars);
-            //context.SaveChanges();
-
-            //return $"Successfully imported {cars.Count}";
+            return $"Successfully imported {cars.Count}";
         }
 
         public static string ImportCustomers(CarDealerContext context, string inputXml)
@@ -219,6 +183,32 @@ namespace CarDealer
             context.SaveChanges();
 
             return $"Successfully imported {customers.Count}";
+        }
+
+        public static string ImportSales(CarDealerContext context, string inputXml)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSalesDto[]), new XmlRootAttribute("Sales"));
+
+            var salesDto = (ImportSalesDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
+            var existingCarIds = context.Cars;
+            var sales = new List<Sale>();
+
+            foreach (var saleDto in salesDto)
+            {
+                var sale = new Sale
+                {
+                    Discount = saleDto.Discount
+                };
+
+
+
+                sales.Add(sale);
+            };
+
+            context.Sales.AddRange(sales);
+            context.SaveChanges();
+
+            return $"Successfully imported {sales.Count}";
         }
     }
 }
