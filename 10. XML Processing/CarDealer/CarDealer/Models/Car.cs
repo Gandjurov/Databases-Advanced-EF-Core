@@ -15,7 +15,7 @@
 
         public string Model { get; set; }
 
-        public long TravelledDistance { get; set; }
+        public long TraveledDistance { get; set; }
 
         public ICollection<Sale> Sales { get; set; }
 		
