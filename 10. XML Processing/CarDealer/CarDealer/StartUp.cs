@@ -47,9 +47,10 @@ namespace CarDealer
                 //var exportCarWithDistance = GetCarsWithDistance(context);
                 //var exportCarWithDistance = GetCarsFromMakeBmw(context);
                 //var exportLocalSuppliers = GetLocalSuppliers(context);
-                var ExportCarsWithTheirListOfParts = GetCarsWithTheirListOfParts(context);
+                //var exportCarsWithTheirListOfParts = GetCarsWithTheirListOfParts(context);
+                var exportTotalSalesByCustomer = GetTotalSalesByCustomer(context);
 
-                Console.WriteLine(ExportCarsWithTheirListOfParts);
+                Console.WriteLine(exportTotalSalesByCustomer);
             }
         }
 
@@ -338,9 +339,7 @@ namespace CarDealer
                               .ThenBy(c => c.Model)
                               .Take(5)
                               .ToList();
-
-
-
+            
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<ExportCarsWithTheirListOfPartsDto>), new XmlRootAttribute("cars"));
 
             var sb = new StringBuilder();
@@ -353,6 +352,33 @@ namespace CarDealer
             xmlSerializer.Serialize(new StringWriter(sb), cars, namespaces);
 
             return sb.ToString().TrimEnd();
-        }   
+        }
+
+        public static string GetTotalSalesByCustomer(CarDealerContext context)
+        {
+            var customers = context.Customers
+                                   .Where(x => x.Sales.Count() >= 1)
+                                   .Select(x => new ExportTotalSalesByCustomerDto
+                                   {
+                                       Name = x.Name,
+                                       BoughtCars = x.Sales.Count(),
+                                       SpentMoney = x.Sales.Sum(y => y.Car.PartCars.Sum(z => z.Part.Price))
+                                   })
+                                   .OrderByDescending(x => x.SpentMoney)
+                                   .ToList();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<ExportTotalSalesByCustomerDto>), new XmlRootAttribute("customers"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                    new XmlQualifiedName("","")
+                });
+
+            xmlSerializer.Serialize(new StringWriter(sb), customers, namespaces);
+
+            return sb.ToString().TrimEnd();
+        }
     }
 }
