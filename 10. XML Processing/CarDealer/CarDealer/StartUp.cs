@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
 using CarDealer.Dtos.Export;
 using CarDealer.Dtos.Import;
 using CarDealer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,11 +46,13 @@ namespace CarDealer
                 //Exports:
                 //var exportCarWithDistance = GetCarsWithDistance(context);
                 //var exportCarWithDistance = GetCarsFromMakeBmw(context);
-                var getLocalSuppliers = GetLocalSuppliers(context);
+                //var exportLocalSuppliers = GetLocalSuppliers(context);
+                var ExportCarsWithTheirListOfParts = GetCarsWithTheirListOfParts(context);
 
-                Console.WriteLine(getLocalSuppliers);
+                Console.WriteLine(ExportCarsWithTheirListOfParts);
             }
         }
+
         //Imports:
         public static string ImportSuppliers(CarDealerContext context, string inputXml)
         {
@@ -130,7 +134,7 @@ namespace CarDealer
                     Make = car.Make,
                     Model = car.Model,
                     TraveledDistance = car.TraveledDistance
-                    
+
                 };
 
                 var partIds = new HashSet<int>();
@@ -180,7 +184,7 @@ namespace CarDealer
                     BirthDate = customerDto.BirthDate,
                     IsYoungDriver = customerDto.IsYoungDriver
                 };
-                
+
                 customers.Add(customer);
             };
 
@@ -214,7 +218,7 @@ namespace CarDealer
                 {
                     continue;
                 }
-                
+
                 var sale = new Sale
                 {
                     CarId = currentCarId,
@@ -313,5 +317,42 @@ namespace CarDealer
 
             return sb.ToString().TrimEnd();
         }
+
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            var cars = context.Cars
+                              .Select(x => new ExportCarsWithTheirListOfPartsDto
+                              {
+                                  Make = x.Make,
+                                  Model = x.Model,
+                                  TraveledDistance = x.TraveledDistance,
+                                  Parts = x.PartCars.Select(p => new ExportPartsDto()
+                                  {
+                                      Name = p.Part.Name,
+                                      Price = p.Part.Price
+                                  })
+                                  .OrderByDescending(p => p.Price)
+                                  .ToList()
+                              })
+                              .OrderByDescending(c => c.TraveledDistance)
+                              .ThenBy(c => c.Model)
+                              .Take(5)
+                              .ToList();
+
+
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<ExportCarsWithTheirListOfPartsDto>), new XmlRootAttribute("cars"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                    new XmlQualifiedName("","")
+                });
+
+            xmlSerializer.Serialize(new StringWriter(sb), cars, namespaces);
+
+            return sb.ToString().TrimEnd();
+        }   
     }
 }
