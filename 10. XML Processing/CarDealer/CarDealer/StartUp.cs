@@ -48,9 +48,11 @@ namespace CarDealer
                 //var exportCarWithDistance = GetCarsFromMakeBmw(context);
                 //var exportLocalSuppliers = GetLocalSuppliers(context);
                 //var exportCarsWithTheirListOfParts = GetCarsWithTheirListOfParts(context);
-                var exportTotalSalesByCustomer = GetTotalSalesByCustomer(context);
+                //var exportTotalSalesByCustomer = GetTotalSalesByCustomer(context);
+                var exportSalesWithAppliedDiscount = GetSalesWithAppliedDiscount(context);
 
-                Console.WriteLine(exportTotalSalesByCustomer);
+
+                Console.WriteLine(exportSalesWithAppliedDiscount);
             }
         }
 
@@ -377,6 +379,38 @@ namespace CarDealer
                 });
 
             xmlSerializer.Serialize(new StringWriter(sb), customers, namespaces);
+
+            return sb.ToString().TrimEnd();
+        }
+
+        public static string GetSalesWithAppliedDiscount(CarDealerContext context)
+        {
+            var sales = context.Sales
+                               .Select(x => new ExportSalesWithAppliedDiscountDto
+                               {
+                                   Car = new ExportCarDto
+                                   {
+                                       Make = x.Car.Make,
+                                       Model = x.Car.Model,
+                                       TravelledDistance = x.Car.TraveledDistance
+                                   },
+                                   Discount = x.Discount,
+                                   CustomerName = x.Customer.Name,
+                                   Price = x.Car.PartCars.Sum(y => y.Part.Price),
+                                   PriceWithDiscount = x.Car.PartCars.Sum(y => y.Part.Price) - (x.Car.PartCars.Sum(y => y.Part.Price) * (x.Discount / 100))
+                               })
+                               .ToList();
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<ExportSalesWithAppliedDiscountDto>), new XmlRootAttribute("sales"));
+
+            var sb = new StringBuilder();
+
+            var namespaces = new XmlSerializerNamespaces(new[]
+            {
+                    new XmlQualifiedName("","")
+                });
+
+            xmlSerializer.Serialize(new StringWriter(sb), sales, namespaces);
 
             return sb.ToString().TrimEnd();
         }
