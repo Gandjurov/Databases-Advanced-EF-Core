@@ -33,15 +33,15 @@ namespace CarDealer
                 //Imports:
                 //var importSuppliers = ImportSuppliers(context, suppliersXml);
                 //var importParts = ImportParts(context, partsXml);
-                var importCars = ImportCars(context, carsXml);
+                //var importCars = ImportCars(context, carsXml);
                 //var importCustomers = ImportCustomers(context, customersXml);
-                //var importSales = ImportSales(context, salesXml);
+                var importSales = ImportSales(context, salesXml);
 
 
                 //Exports:
 
 
-                Console.WriteLine(importCars);
+                Console.WriteLine(importSales);
             }
         }
 
@@ -190,18 +190,32 @@ namespace CarDealer
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSalesDto[]), new XmlRootAttribute("Sales"));
 
             var salesDto = (ImportSalesDto[])xmlSerializer.Deserialize(new StringReader(inputXml));
-            var existingCarIds = context.Cars;
             var sales = new List<Sale>();
+
+            var existingCarIds = context.Cars
+                                .Select(x => x.Id)
+                                .ToArray();
+
+            var existingCustomerIds = context.Customers
+                                     .Select(x => x.Id)
+                                     .ToArray();
 
             foreach (var saleDto in salesDto)
             {
+                var currentCarId = saleDto.CarId;
+                var currentCustomerId = saleDto.CustomerId;
+
+                if (!existingCarIds.Contains(currentCarId))
+                {
+                    continue;
+                }
+                
                 var sale = new Sale
                 {
+                    CarId = currentCarId,
+                    CustomerId = currentCustomerId,
                     Discount = saleDto.Discount
                 };
-
-
-
                 sales.Add(sale);
             };
 
