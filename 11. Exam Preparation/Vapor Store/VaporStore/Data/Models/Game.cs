@@ -23,10 +23,10 @@
         public DateTime ReleaseDate { get; set; }
         
         public int DeveloperId { get; set; }
-        //public Developer Developer { get; set; }
+        public Developer Developer { get; set; }
 
         public int GenreId { get; set; }
-        //public Genre Genre { get; set; }
+        public Genre Genre { get; set; }
 
         //public ICollection<Purchase> Purchases { get; set; }
         //public ICollection<GameTag> GameTags { get; set; }
