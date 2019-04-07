@@ -8,8 +8,8 @@
     {
         public Game()
         {
-            //this.Purchases = new List<Purchase>();
-            //this.GameTags = new List<GameTag>();
+            this.Purchases = new HashSet<Purchase>();
+            this.GameTags = new HashSet<GameTag>();
         }
         public int Id { get; set; }
 
@@ -28,8 +28,8 @@
         public int GenreId { get; set; }
         public Genre Genre { get; set; }
 
-        //public ICollection<Purchase> Purchases { get; set; }
-        //public ICollection<GameTag> GameTags { get; set; }
+        public ICollection<Purchase> Purchases { get; set; }
+        public ICollection<GameTag> GameTags { get; set; }
         
     }
 }
