@@ -9,6 +9,7 @@
     using Data;
     using Newtonsoft.Json;
     using VaporStore.Data.Models;
+    using VaporStore.Data.Models.Enums;
     using VaporStore.DataProcessor.ImportDtos;
 
     public static class Deserializer
@@ -62,13 +63,69 @@
 
             return result;
 		}
-
-
-
+        
         public static string ImportUsers(VaporStoreDbContext context, string jsonString)
 		{
-			throw new NotImplementedException();
-		}
+            var usersDto = JsonConvert.DeserializeObject<ImportUserDto[]>(jsonString);
+            var sb = new StringBuilder();
+            var users = new List<User>();
+
+            foreach (var userDto in usersDto)
+            {
+                if (!IsValid(userDto) || !userDto.Cards.All(IsValid))
+                {
+                    sb.AppendLine("Invalid Data");
+                    continue;
+                }
+
+                bool isValidEnum = true;
+
+                foreach (var cardDto in userDto.Cards)
+                {
+                    var cardType = Enum.TryParse<CardType>(cardDto.Type, out CardType test);
+
+                    if (!cardType)
+                    {
+                        isValidEnum = false;
+                        break;
+                    }
+                }
+
+                if (!isValidEnum)
+                {
+                    sb.AppendLine("Invalid Data");
+                    continue;
+                }
+
+                var user = new User()
+                {
+                    FullName = userDto.FullName,
+                    Username = userDto.Username,
+                    Age = userDto.Age,
+                    Email = userDto.Email
+                };
+
+                foreach (var currentCard in userDto.Cards)
+                {
+                    user.Cards.Add(new Card
+                    {
+                        Number = currentCard.Number,
+                        Cvc = currentCard.CVC,
+                        Type = Enum.Parse<CardType>(currentCard.Type)
+                    });
+                }
+
+                users.Add(user);
+                sb.AppendLine($"Imported {user.Username} with {user.Cards.Count} cards");
+            }
+
+            context.Users.AddRange(users);
+            context.SaveChanges();
+
+            string result = sb.ToString().TrimEnd();
+
+            return result;
+        }
 
 		public static string ImportPurchases(VaporStoreDbContext context, string xmlString)
 		{
