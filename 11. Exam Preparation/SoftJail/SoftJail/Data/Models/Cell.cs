@@ -5,7 +5,7 @@ namespace SoftJail.Data.Models
 {
     public class Cell : BaseModel<int>
     {
-        public Cell(ICollection<Prisoner> prisoners)
+        public Cell()
         {
             this.Prisoners = new List<Prisoner>();
         }
