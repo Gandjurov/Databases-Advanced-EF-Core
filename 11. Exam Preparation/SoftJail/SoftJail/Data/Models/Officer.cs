@@ -13,6 +13,7 @@ namespace SoftJail.Data.Models
             this.OfficerPrisoners = new List<OfficerPrisoner>();
         }
 
+        [Required]
         [StringLength(30, MinimumLength = 3)]
         public string FullName { get; set; }
 
