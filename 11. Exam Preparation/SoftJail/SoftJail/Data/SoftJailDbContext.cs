@@ -19,7 +19,7 @@
         public DbSet<Mail> Mails { get; set; }
         public DbSet<Cell> Cells { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<OfficerPrisoner> OfficerPrisoners { get; set; }
+        public DbSet<OfficerPrisoner> OfficersPrisoners { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
