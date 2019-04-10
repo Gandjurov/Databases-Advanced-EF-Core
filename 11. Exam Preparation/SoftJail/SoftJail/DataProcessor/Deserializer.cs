@@ -3,13 +3,16 @@
     using Data;
     using Newtonsoft.Json;
     using SoftJail.Data.Models;
+    using SoftJail.Data.Models.Enums;
     using SoftJail.DataProcessor.ImportDto;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Xml.Serialization;
 
     public class Deserializer
     {
@@ -103,7 +106,52 @@
 
         public static string ImportOfficersPrisoners(SoftJailDbContext context, string xmlString)
         {
-            throw new NotImplementedException();
+            var serializer = new XmlSerializer(typeof(ImportOfficerDto[]), new XmlRootAttribute("Officers"));
+            var allOfficers = (ImportOfficerDto[])serializer.Deserialize(new StringReader(xmlString));
+
+            var validOfficers = new List<Officer>();
+            var sb = new StringBuilder();
+
+            foreach (var dto in allOfficers)
+            {
+                var isWeaponValid = Enum.TryParse<Weapon>(dto.Weapon, out Weapon weapon);
+                var isPositionValid = Enum.TryParse<Position>(dto.Position, out Position position);
+
+                var isValid = IsValid(dto) && isWeaponValid && isPositionValid;
+
+                if (isValid)
+                {
+
+                    var officer = new Officer
+                    {
+                        FullName = dto.Name,
+                        Salary = dto.Money,
+                        Position = position,
+                        Weapon = weapon,
+                        DepartmentId = dto.DepartmentId,
+                        OfficerPrisoners = dto.Prisoners
+                                    .Select(p => new OfficerPrisoner
+                                    {
+                                        PrisonerId = p.Id
+                                    })
+                                    .ToArray()
+                    };
+
+                    validOfficers.Add(officer);
+                    sb.AppendLine($"Imported {officer.FullName} ({officer.OfficerPrisoners.Count} prisoners)");
+                }
+                else
+                {
+                    sb.AppendLine($"Invalid Data");
+                }
+            }
+
+
+            context.Officers.AddRange(validOfficers);
+            context.SaveChanges();
+
+            var result = sb.ToString().TrimEnd();
+            return result;
         }
 
         private static bool IsValid(object obj)
