@@ -27,7 +27,7 @@
 
         private static void ImportEntities(PetClinicContext context, string baseDir = @"..\Datasets\")
         {
-            const string exportDir = "./Results/";
+            const string exportDir = @"..\..\..\Results/";
 
             string animalAids = DataProcessor.Deserializer.ImportAnimalAids(context, File.ReadAllText(baseDir + "animalAids.json"));
             PrintAndExportEntityToFile(animalAids, exportDir + "AnimalAidsImport.txt");
