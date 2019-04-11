@@ -1,4 +1,4 @@
-﻿namespace PetClinic.Data.Models
+﻿namespace PetClinic.Models
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,7 @@
     {
         public Procedure()
         {
-            this.ProcedureAnimalAids = new List<ProcedureAnimalAid>();
+            this.ProcedureAnimalAids = new HashSet<ProcedureAnimalAid>();
         }
 
         [Key]

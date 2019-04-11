@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PetClinic.Data.Models
+namespace PetClinic.Models
 {
     public class ProcedureAnimalAid
     {

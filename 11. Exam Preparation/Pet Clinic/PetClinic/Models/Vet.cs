@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace PetClinic.Data.Models
+namespace PetClinic.Models
 {
     public class Vet
     {
         public Vet()
         {
-            this.Procedures = new List<Procedure>();
+            this.Procedures = new HashSet<Procedure>();
         }
 
         [Key]

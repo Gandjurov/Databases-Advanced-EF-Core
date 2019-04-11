@@ -1,6 +1,7 @@
 ﻿namespace PetClinic.Data
 {
     using Microsoft.EntityFrameworkCore;
+    using PetClinic.Models;
 
     public class PetClinicContext : DbContext
     {
@@ -8,6 +9,13 @@
 
         public PetClinicContext(DbContextOptions options)
             :base(options) { }
+
+        public DbSet<Animal> Animals { get; set; }
+        public DbSet<Passport> Passports { get; set; }
+        public DbSet<Vet> Vets { get; set; }
+        public DbSet<Procedure> Procedures { get; set; }
+        public DbSet<AnimalAid> AnimalAids { get; set; }
+        public DbSet<ProcedureAnimalAid> ProceduresAnimalAids { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -19,7 +27,24 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ProcedureAnimalAid>(entity =>
+            {
+                entity.HasKey(pa => new { pa.ProcedureId, pa.AnimalAidId });
 
+                entity.HasOne(pa => pa.Procedure)
+                      .WithMany(p => p.ProcedureAnimalAids)
+                      .HasForeignKey(pa => pa.ProcedureId);
+
+                entity.HasOne(pa => pa.AnimalAid)
+                      .WithMany(p => p.AnimalAidProcedures)
+                      .HasForeignKey(pa => pa.AnimalAidId);
+            });
+
+            builder.Entity<Vet>()
+                   .HasAlternateKey(e => e.PhoneNumber);
+
+            builder.Entity<AnimalAid>()
+                   .HasAlternateKey(e => e.Name);
         }
     }
 }
