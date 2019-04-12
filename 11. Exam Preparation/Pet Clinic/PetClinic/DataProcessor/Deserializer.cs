@@ -200,6 +200,10 @@
                     DateTime = procedureDate,
                     ProcedureAnimalAids = mappings
                 };
+
+                validProcedures.Add(procedure);
+
+                sb.AppendLine("Record successfully imported.");
             }
 
             context.Procedures.AddRange(validProcedures);
